@@ -1,4 +1,12 @@
-Sis257_Licoreria
+# Sis257_Licoreria
+Proyecto de la materia sis257 una aplicacion web para la gestión de una licorería
+# Integrantes
+
+```bash
+1. Anave Cristhian
+2. Amanda Serrudo
+```
+## Descripcion
 
 La Licorería "Solo un traguito" es una tienda de venta de bebidas alcohólicas una de las mas reconocidas por su variendad de 
 
