@@ -24,7 +24,7 @@ export class Proveedor {
   @Column('varchar', { length: 10 })
   telefono: string;
 
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 30 })
   email: string;
 
   @CreateDateColumn({ name: 'fecha_creacion' })
