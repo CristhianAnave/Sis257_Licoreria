@@ -43,25 +43,16 @@ export class CreateProductoDto {
   @ApiProperty() //Swagger
   @IsNotEmpty({ message: 'El campo precioCompra es obligatorio' })
   @IsNumber({}, { message: 'El campo precioCompra debe ser un numero' })
-  @MaxLength(5, {
-    message: 'El campo precioCompra no debe ser mayor a 5 caracteres',
-  })
   readonly precioCompra: number;
 
   @ApiProperty() //Swagger
   @IsNotEmpty({ message: 'El campo precioVenta es obligatorio' })
   @IsNumber({}, { message: 'El campo precioVenta debe ser de tipo numero' })
-  @MaxLength(5, {
-    message: 'El campo precioVenta no debe ser mayor a 5 caracteres',
-  })
   readonly precioVenta: number;
 
   @ApiProperty() //Swagger
   @IsNotEmpty({ message: 'El campo stock es obligatorio' })
   @IsNumber({}, { message: 'El campo stock debe ser de tipo numero' })
-  @MaxLength(5, {
-    message: 'El campo stock no debe ser mayor a 5 caracteres',
-  })
   readonly stock: number;
 
   @ApiProperty() //Swagger

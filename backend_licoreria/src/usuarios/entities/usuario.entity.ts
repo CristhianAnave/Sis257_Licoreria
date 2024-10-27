@@ -1,8 +1,11 @@
+import { Compra } from 'src/compra/entities/compra.entity';
+import { Venta } from 'src/ventas/entities/venta.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -21,6 +24,9 @@ export class Usuario {
   @Column('varchar', { length: 30 })
   rol: string;
 
+  @Column('boolean')
+  premium: boolean;
+
   @CreateDateColumn({ name: 'fecha_creacion' })
   fechaCreacion: Date;
 
@@ -29,4 +35,10 @@ export class Usuario {
 
   @DeleteDateColumn({ name: 'fecha_elimanacion', select: false })
   fechaEliminacion: Date;
+
+  @OneToMany(() => Compra, (compra) => compra.usuario)
+  compras: Compra[];
+
+  @OneToMany(() => Venta, (venta) => venta.usuarios)
+  ventas: Venta[];
 }

@@ -26,6 +26,7 @@ export class UsuariosService {
     usuario.usuario = createUsuarioDto.usuario.trim();
     usuario.clave = process.env.DEFAULT_PASSWORD;
     usuario.rol = createUsuarioDto.rol.trim();
+    usuario.premium = createUsuarioDto.premium;
 
     return this.usuariosRepository.save(usuario);
   }

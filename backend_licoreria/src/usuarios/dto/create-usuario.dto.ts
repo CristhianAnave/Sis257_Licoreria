@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsBooleanString,
+  IsDefined,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateUsuarioDto {
   @ApiProperty() //Swagger
@@ -25,4 +31,9 @@ export class CreateUsuarioDto {
     message: 'El campo rol no debe ser mayor a 30 caracteres',
   })
   readonly rol: string;
+
+  @ApiProperty()
+  @IsDefined({ message: 'El campo premium debe estar definido' })
+  @IsBooleanString({ message: 'El campo premium debe ser de tipo lógico' })
+  readonly premium: boolean;
 }
