@@ -23,16 +23,15 @@ export class ProveedoresService {
       razonSocial: createProveedorDto.razonSocial.trim(),
     });
 
-    if (existe) {
-      throw new ConflictException('El proveedor ya existe');
-    }
-    return this.proveedoresRepository.save({
-      nit: createProveedorDto.nit.trim(),
-      razonSocial: createProveedorDto.razonSocial.trim(),
-      direccion: createProveedorDto.direccion.trim(),
-      telefono: createProveedorDto.telefono.trim(),
-      email: createProveedorDto.email.trim(),
-    });
+    if (existe) throw new ConflictException('El proveedor ya existe');
+
+    const proveedor = new Proveedor();
+    proveedor.nit = createProveedorDto.nit.trim();
+    proveedor.razonSocial = createProveedorDto.razonSocial.trim();
+    proveedor.direccion = createProveedorDto.direccion.trim();
+    proveedor.telefono = createProveedorDto.telefono.trim();
+    proveedor.email = createProveedorDto.email.trim();
+    return this.proveedoresRepository.save(proveedor);
   }
 
   async findAll(): Promise<Proveedor[]> {
