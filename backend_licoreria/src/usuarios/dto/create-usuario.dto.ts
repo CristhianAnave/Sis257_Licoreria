@@ -17,14 +17,6 @@ export class CreateUsuarioDto {
   readonly usuario: string;
 
   @ApiProperty() //Swagger
-  @IsNotEmpty({ message: 'El campo clave es obligatorio' })
-  @IsString({ message: 'El campo clave debe ser tipo cadena' })
-  @MaxLength(10, {
-    message: 'El campo clave no debe ser mayor a 10 caracteres',
-  })
-  readonly clave: string;
-
-  @ApiProperty() //Swagger
   @IsNotEmpty({ message: 'El campo rol es obligatorio' })
   @IsString({ message: 'El campo rol debe ser tipo cadena' })
   @MaxLength(30, {

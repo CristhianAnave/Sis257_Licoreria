@@ -20,6 +20,9 @@ export class Producto {
   @Column('varchar', { length: 10 })
   codigo: string;
 
+  @Column('integer', { name: 'id_categoria' }) // adiionado
+  idCategoria: number;
+
   @Column('varchar', { length: 30 })
   nombre: string;
 

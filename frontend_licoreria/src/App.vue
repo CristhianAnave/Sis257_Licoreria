@@ -19,10 +19,11 @@ import HelloWorld from './components/HelloWorld.vue'
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/prueba">Prueba</RouterLink>
         <RouterLink to="/categoria">Categoría</RouterLink>
         <RouterLink to="/clientes">Clientes</RouterLink>
         <RouterLink to="/proveedores">Proveedores</RouterLink>
+        <RouterLink to="/productos">Productos</RouterLink>
+
       </nav>
     </div>
   </header>

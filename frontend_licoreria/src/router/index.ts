@@ -15,11 +15,6 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/prueba',
-      name: 'prueba',
-      component: () => import('../views/pruebaView.vue'),
-    },
-    {
       path: '/categoria',
       name: 'categoria',
       component: () => import('../views/CategoriaView.vue'),
@@ -27,12 +22,17 @@ const router = createRouter({
     {
       path: '/clientes',
       name: 'clientes',
-      component: () => import('../views/ClientesView.vue'),
+      component: () => import('../views/ClienteView.vue'),
     },
     {
       path: '/proveedores',
       name: 'proveedores',
       component: () => import('../views/ProveedorView.vue'),
+    },
+    {
+      path: '/productos',
+      name: 'productos',
+      component: () => import('../views/ProductoView.vue'),
     },
   ],
 })

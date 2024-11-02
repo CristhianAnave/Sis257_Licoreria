@@ -1,6 +1,8 @@
 import { Compra } from 'src/compra/entities/compra.entity';
 import { Venta } from 'src/ventas/entities/venta.entity';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -9,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt'; // para login
 
 @Entity('usuarios')
 export class Usuario {
@@ -18,7 +21,7 @@ export class Usuario {
   @Column('varchar', { length: 20 })
   usuario: string;
 
-  @Column('varchar', { length: 10 })
+  @Column('varchar', { length: 250 })
   clave: string;
 
   @Column('varchar', { length: 30 })
@@ -41,4 +44,16 @@ export class Usuario {
 
   @OneToMany(() => Venta, (venta) => venta.usuarios)
   ventas: Venta[];
+
+  //para login
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    const salt = await bcrypt.genSalt();
+    this.clave = await bcrypt.hash(this.clave, salt);
+  }
+
+  async validatePassword(plainPassword: string): Promise<boolean> {
+    return bcrypt.compare(plainPassword, this.clave);
+  }
 }
