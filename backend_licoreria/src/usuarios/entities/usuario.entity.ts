@@ -21,7 +21,7 @@ export class Usuario {
   @Column('varchar', { length: 20 })
   usuario: string;
 
-  @Column('varchar', { length: 250 })
+  @Column('varchar', { length: 250, select: false })
   clave: string;
 
   @Column('varchar', { length: 30 })

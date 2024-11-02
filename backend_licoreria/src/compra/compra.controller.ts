@@ -6,13 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { CompraService } from './compra.service';
 import { CreateCompraDto } from './dto/create-compra.dto';
 import { UpdateCompraDto } from './dto/update-compra.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@ApiTags('compra')
+@ApiTags('compra') //Swagger
+@ApiBearerAuth() //lo de documentacion para logiar
+@UseGuards(JwtAuthGuard) //lo de documentacion para logiar
 @Controller('compra')
 export class CompraController {
   constructor(private readonly compraService: CompraService) {}

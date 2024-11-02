@@ -6,11 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { DetalleventaService } from './detalleventa.service';
 import { CreateDetalleventaDto } from './dto/create-detalleventa.dto';
 import { UpdateDetalleventaDto } from './dto/update-detalleventa.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
+@ApiTags('detalleventa') //Swagger
+@ApiBearerAuth() //lo de documentacion para logiar
+@UseGuards(JwtAuthGuard) //lo de documentacion para logiar
 @Controller('detalleventa')
 export class DetalleventaController {
   constructor(private readonly detalleventaService: DetalleventaService) {}

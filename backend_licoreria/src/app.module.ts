@@ -12,6 +12,7 @@ import { DetallecomprasModule } from './detallecompras/detallecompras.module';
 import { CompraModule } from './compra/compra.module';
 import { VentasModule } from './ventas/ventas.module';
 import { DetalleventaModule } from './detalleventa/detalleventa.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { DetalleventaModule } from './detalleventa/detalleventa.module';
     CompraModule,
     VentasModule,
     DetalleventaModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
