@@ -13,6 +13,7 @@ import { CompraModule } from './compra/compra.module';
 import { VentasModule } from './ventas/ventas.module';
 import { DetalleventaModule } from './detalleventa/detalleventa.module';
 import { AuthModule } from './auth/auth.module';
+import { EmpleadosModule } from './empleados/empleados.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AuthModule } from './auth/auth.module';
     VentasModule,
     DetalleventaModule,
     AuthModule,
+    EmpleadosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -18,8 +18,12 @@
         <span v-else>
           <RouterLink to="/categoria">Categoría</RouterLink>
           <RouterLink to="/clientes">Clientes</RouterLink>
+          <RouterLink to="/usuarios">Usuarios</RouterLink>
+          <RouterLink to="/empleados">Empleados</RouterLink>
           <RouterLink to="/proveedores">Proveedores</RouterLink>
           <RouterLink to="/productos">Productos</RouterLink>
+          <RouterLink to="/productosVenta">Produtos Disponibles</RouterLink>
+          <RouterLink to="/carrito">Carrito de Compras</RouterLink>
           <RouterLink to="/about">Acerca De</RouterLink>
           <a @click="authStore.logout()" class="text-danger">Salir</a>
         </span>
@@ -93,3 +97,10 @@
     }
   }
 </style>
+
+
+
+
+
+
+

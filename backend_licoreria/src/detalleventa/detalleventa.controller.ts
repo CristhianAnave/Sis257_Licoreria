@@ -3,49 +3,56 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
+  Patch, // Cambiar a PATCH en lugar de PUT
   Delete,
   UseGuards,
 } from '@nestjs/common';
 import { DetalleventaService } from './detalleventa.service';
 import { CreateDetalleventaDto } from './dto/create-detalleventa.dto';
-import { UpdateDetalleventaDto } from './dto/update-detalleventa.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Detalleventa } from './entities/detalleventa.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('detalleventa') //Swagger
-@ApiBearerAuth() //lo de documentacion para logiar
-@UseGuards(JwtAuthGuard) //lo de documentacion para logiar
+@ApiTags('detalleventa') // Swagger
+@ApiBearerAuth() // Para la documentación y autenticación JWT
+@UseGuards(JwtAuthGuard) // Protege las rutas con JWT
 @Controller('detalleventa')
 export class DetalleventaController {
   constructor(private readonly detalleventaService: DetalleventaService) {}
 
+  // Crear un nuevo detalle de venta
   @Post()
-  create(@Body() createDetalleventaDto: CreateDetalleventaDto) {
+  async create(
+    @Body() createDetalleventaDto: CreateDetalleventaDto,
+  ): Promise<Detalleventa> {
     return this.detalleventaService.create(createDetalleventaDto);
   }
 
+  // Obtener todos los detalles de venta
   @Get()
-  findAll() {
+  async findAll(): Promise<Detalleventa[]> {
     return this.detalleventaService.findAll();
   }
 
+  // Obtener un detalle de venta específico por ID
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.detalleventaService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Detalleventa> {
+    return this.detalleventaService.findOne(+id); // Convertir el id a número
   }
 
-  @Patch(':id')
-  update(
+  // Actualizar un detalle de venta por ID (con PATCH para actualización parcial)
+  @Patch(':id') // Cambiar a PATCH en lugar de PUT
+  async update(
     @Param('id') id: string,
-    @Body() updateDetalleventaDto: UpdateDetalleventaDto,
-  ) {
-    return this.detalleventaService.update(+id, updateDetalleventaDto);
+    @Body() updateDetalleventaDto: CreateDetalleventaDto, // Usamos el mismo DTO
+  ): Promise<Detalleventa> {
+    return this.detalleventaService.update(+id, updateDetalleventaDto); // Llamar al servicio con PATCH
   }
 
+  // Eliminar un detalle de venta por ID (lógicamente)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.detalleventaService.remove(+id);
+  async delete(@Param('id') id: string): Promise<void> {
+    return this.detalleventaService.delete(+id);
   }
 }

@@ -1,16 +1,17 @@
-import { Venta } from 'src/ventas/entities/venta.entity';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('clientes')
-export class Cliente {
+@Entity('empleados')
+export class Empleado {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
@@ -26,13 +27,25 @@ export class Cliente {
   @Column('varchar', { length: 30 })
   apellidoMaterno: string;
 
+  @Column('integer', { name: 'id_usuarios' }) // adiionado
+  idUsuarios: number;
+
+  @Column('varchar', { length: 20 })
+  cargo: string;
+
   @Column('varchar', { length: 30 })
   email: string;
+
+  @Column('varchar', { length: 50 })
+  direccion: string;
 
   @Column('varchar', { length: 8 })
   celular: string;
 
-  @CreateDateColumn({ name: 'fecha_creacion' })
+  @Column('date', { name: 'fecha_Contratacion' })
+  fechaContratacion: Date;
+
+  @CreateDateColumn({ name: 'fecha_creacion', nullable: true })
   fechaCreacion: Date;
 
   @UpdateDateColumn({ name: 'fecha_modificacion' })
@@ -41,6 +54,7 @@ export class Cliente {
   @DeleteDateColumn({ name: 'fecha_elimanacion', select: false })
   fechaEliminacion: Date;
 
-  @OneToMany(() => Venta, (venta) => venta.cliente)
-  ventas: Venta[];
+  @ManyToOne(() => Usuario, (usuario) => usuario.empleados)
+  @JoinColumn({ name: 'id_usuarios', referencedColumnName: 'id' })
+  usuarios: Usuario;
 }

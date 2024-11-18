@@ -58,7 +58,7 @@
   }
 
   .form-submit {
-    background: #ee5007;
+    background: #1eb361;
     border: none;
     border-radius: 5rem;
     color: white;

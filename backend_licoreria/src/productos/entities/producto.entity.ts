@@ -1,5 +1,6 @@
 import { Categoria } from 'src/categoria/entities/categoria.entity';
 import { Detallecompra } from 'src/detallecompras/entities/detallecompra.entity';
+import { Detalleventa } from 'src/detalleventa/entities/detalleventa.entity';
 import {
   Column,
   CreateDateColumn,
@@ -56,4 +57,7 @@ export class Producto {
 
   @OneToMany(() => Detallecompra, (detallecompra) => detallecompra.producto)
   detallecompras: Detallecompra[];
+
+  @OneToMany(() => Detalleventa, (detalleventas) => detalleventas.producto)
+  detalleventas: Detalleventa[];
 }

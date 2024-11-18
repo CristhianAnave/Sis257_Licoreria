@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt'; // para login
+import { Empleado } from 'src/empleados/entities/empleado.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -44,6 +45,10 @@ export class Usuario {
 
   @OneToMany(() => Venta, (venta) => venta.usuarios)
   ventas: Venta[];
+
+  //Este esta listo....
+  @OneToMany(() => Empleado, (empleado) => empleado.usuarios)
+  empleados: Empleado[];
 
   //para login
   @BeforeInsert()

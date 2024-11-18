@@ -5,29 +5,43 @@ import router from '@/router'
 
 const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: localStorage.getItem('user') || '',
+    user: JSON.parse(localStorage.getItem('user') || 'null'),  // Guardamos el usuario como un objeto
     token: getTokenFromLocalStorage(),
-    returnUrl: null || ''
+    role: localStorage.getItem('role') || '',
+    returnUrl: null || '',
   }),
-  getters: {},
+  getters: {
+    // Getter para acceder al usuario
+    userId: (state) => state.user?.id, // Acceso seguro al ID del usuario
+    userName: (state) => state.user?.nombre, // Acceso seguro al nombre del usuario
+  },
   actions: {
     async login(usuario: string, clave: string) {
-      await http.post('auth/login', { usuario, clave }).then((response) => {
-        this.user = response.data.usuario
-        this.token = response.data.access_token
+      try {
+        const response = await http.post('auth/login', { usuario, clave })
+        const usuarioLogueado = response.data.usuario
+        this.user = usuarioLogueado // Guardamos el objeto completo de usuario
 
-        localStorage.setItem('user', this.user || '')
-        localStorage.setItem('token', this.token || '')
+        // Guardamos el objeto `user` como una cadena JSON
+        localStorage.setItem('user', JSON.stringify(this.user))
+        localStorage.setItem('token', response.data.access_token || '')
+        localStorage.setItem('role', response.data.rol || '')
+
+        this.token = response.data.access_token
+        this.role = response.data.rol // Guardamos el rol aquí
 
         router.push(this.returnUrl || '/')
-      })
+      } catch (error) {
+        console.error('Error de login:', error)
+        throw error
+      }
     },
     logout() {
       localStorage.clear()
       this.$reset()
       router.push('login')
-    }
-  }
+    },
+  },
 })
 
 export { useAuthStore }
