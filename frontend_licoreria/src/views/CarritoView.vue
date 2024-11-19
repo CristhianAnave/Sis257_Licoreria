@@ -1,85 +1,110 @@
 <script lang="ts">
-  import { useCartStore } from '@/stores/cart'; // Importamos el store de Pinia
-  import { computed, ref } from 'vue'; // Computed para calcular el total
-  import axios from 'axios'; // Para realizar la llamada a la API (si fuera necesario)
+import { useCartStore } from '@/stores/cart'; // Importamos el store de Pinia
+import { computed, ref } from 'vue'; // Computed para calcular el total
+import InputText from 'primevue/inputtext'; // Importamos InputText de PrimeVue
+import Button from 'primevue/button'; // Importamos Button de PrimeVue
+import Dialog from 'primevue/dialog'; // Importamos el componente Dialog para el modal
 
-  export default {
-    setup() {
-      // Usamos el store de Pinia para el carrito
-      const cartStore = useCartStore();
+export default {
+  components: {
+    InputText,
+    Button,
+    Dialog,  // Componente de PrimeVue para el modal
+  },
+  setup() {
+    const cartStore = useCartStore();
 
-      // State para mostrar el diálogo de error
-      const showDialog = ref(false);
-      const dialogMessage = ref("");
+    // Estado para mostrar el modal del formulario de cliente
+    const mostrarFormularioCliente = ref(false);
 
-      // Función para calcular el total del carrito
-      const totalCarrito = computed(() => {
-        return cartStore.productos.reduce((total, producto) => {
-          return total + producto.precioVenta * producto.cantidad;
-        }, 0);
+    // Estado para almacenar el cliente seleccionado
+    const clienteSeleccionado = ref({
+      ci: '',
+      nombre: '',
+      direccion: '',
+      telefono: ''
+    });
+
+    // Función para calcular el total del carrito
+    const totalCarrito = computed(() => {
+      return cartStore.productos.reduce((total, producto) => {
+        return total + producto.precioVenta * producto.cantidad;
+      }, 0);
+    });
+
+    // Función para eliminar un producto del carrito
+    function eliminarProducto(productoId: number) {
+      cartStore.eliminarDelCarrito(productoId);
+    }
+
+    // Función para vaciar el carrito
+    function vaciarCarrito() {
+      cartStore.vaciarCarrito();
+    }
+
+    // Función para aumentar la cantidad de un producto
+    function aumentarCantidad(productoId: number, stock: number) {
+      const producto = cartStore.productos.find(p => p.id === productoId);
+      if (producto) {
+        if (producto.cantidad < stock) {
+          producto.cantidad++;
+        }
+      }
+    }
+
+    // Función para disminuir la cantidad de un producto
+    function disminuirCantidad(productoId: number) {
+      const producto = cartStore.productos.find(p => p.id === productoId);
+      if (producto && producto.cantidad > 1) {
+        producto.cantidad--;
+      }
+    }
+
+    // Función para registrar la venta
+    function registrarVenta() {
+      if (!clienteSeleccionado.value) {
+        alert('Debe seleccionar un cliente para completar la venta.');
+        return;
+      }
+      alert('Venta registrada con éxito');
+    }
+
+    // Función para formatear la moneda
+    function formatCurrency(value: number): string {
+      return value.toLocaleString('es-BO', {
+        style: 'currency',
+        currency: 'BOB',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       });
+    }
 
-      // Función para eliminar un producto del carrito
-      function eliminarProducto(productoId: number) {
-        cartStore.eliminarDelCarrito(productoId);
-      }
+    // Función para mostrar el formulario en un modal
+    function mostrarFormulario() {
+      mostrarFormularioCliente.value = true;
+    }
 
-      // Función para vaciar el carrito
-      function vaciarCarrito() {
-        cartStore.vaciarCarrito();
-      }
+    // Función para cerrar el formulario del cliente
+    function cerrarFormulario() {
+      mostrarFormularioCliente.value = false;
+    }
 
-      // Función para aumentar la cantidad de un producto
-      function aumentarCantidad(productoId: number, stock: number) {
-        const producto = cartStore.productos.find(p => p.id === productoId);
-        if (producto) {
-          if (producto.cantidad < stock) {
-            producto.cantidad++;
-          } else {
-            dialogMessage.value = `No puedes comprar más de ${stock} unidades de este producto.`;
-            showDialog.value = true;
-          }
-        }
-      }
-
-      // Función para disminuir la cantidad de un producto
-      function disminuirCantidad(productoId: number) {
-        const producto = cartStore.productos.find(p => p.id === productoId);
-        if (producto && producto.cantidad > 1) {
-          producto.cantidad--;
-        }
-      }
-
-      // Filtro de formato de moneda (Bs) usando toLocaleString
-      function formatCurrency(value: number): string {
-        return value.toLocaleString('es-BO', {
-          style: 'currency',
-          currency: 'BOB',  // Bolivianos
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-      }
-
-      // Función para registrar la venta
-      function registrarVenta() {
-        alert('Venta registrada con éxito');
-        // Aquí puedes agregar la lógica para registrar la venta, por ejemplo, enviando los datos al backend.
-      }
-
-      return {
-        cartStore,
-        totalCarrito,
-        eliminarProducto,
-        vaciarCarrito,
-        aumentarCantidad,
-        disminuirCantidad,
-        formatCurrency,
-        registrarVenta,
-        showDialog,
-        dialogMessage,
-      };
-    },
-  };
+    return {
+      cartStore,
+      totalCarrito,
+      eliminarProducto,
+      vaciarCarrito,
+      aumentarCantidad,
+      disminuirCantidad,
+      registrarVenta,
+      clienteSeleccionado,  // Datos del cliente
+      formatCurrency,
+      mostrarFormulario,
+      cerrarFormulario,
+      mostrarFormularioCliente,  // Estado para mostrar el formulario
+    };
+  },
+};
 </script>
 
 <template>
@@ -111,7 +136,6 @@
             <td>{{ producto.categoria.nombre }}</td>
             <td>{{ producto.descripcion }}</td>
             <td>
-              <!-- Controles para aumentar y disminuir cantidad -->
               <div class="cantidad-controls">
                 <button @click="disminuirCantidad(producto.id)" :disabled="producto.cantidad === 1">-</button>
                 <span>{{ producto.cantidad }}</span>
@@ -131,20 +155,42 @@
         <h3>Total: {{ formatCurrency(totalCarrito) }}</h3>
       </div>
 
-      <!-- Botones para vaciar carrito y registrar venta -->
       <div class="botones-acciones">
         <button @click="vaciarCarrito">Vaciar carrito</button>
         <button @click="registrarVenta" class="registrar-venta">Registrar venta</button>
       </div>
     </div>
 
-    <!-- Cuadro de diálogo de error -->
-    <Dialog v-model:visible="showDialog" header="Error" :style="{ width: '300px' }">
-      <p>{{ dialogMessage }}</p>
-      <template #footer>
-        <Button label="Cerrar" icon="pi pi-check" @click="showDialog = false" />
-      </template>
+    <!-- Botón para seleccionar cliente -->
+    <button @click="mostrarFormulario" class="seleccionar-cliente">
+      Seleccionar Cliente
+    </button>
+
+    <!-- Modal para ingresar datos del cliente -->
+    <Dialog v-model:visible="mostrarFormularioCliente" header="Formulario de Cliente" :style="{ width: '400px' }" :modal="true" :closable="false">
+      <div class="formulario-cliente">
+        <form>
+          <label for="ci">Cédula:</label>
+          <InputText v-model="clienteSeleccionado.ci" id="ci" placeholder="Ingrese cédula" class="input-text" />
+          <br />
+
+          <label for="nombre">Nombre:</label>
+          <InputText v-model="clienteSeleccionado.nombre" id="nombre" placeholder="Ingrese nombre" class="input-text" />
+          <br />
+
+          <label for="direccion">Dirección:</label>
+          <InputText v-model="clienteSeleccionado.direccion" id="direccion" placeholder="Ingrese dirección" class="input-text" />
+          <br />
+
+          <label for="telefono">Teléfono:</label>
+          <InputText v-model="clienteSeleccionado.telefono" id="telefono" placeholder="Ingrese teléfono" class="input-text" />
+          <br />
+
+          <Button label="Cerrar" icon="pi pi-times" @click="cerrarFormulario" class="cerrar-formulario" />
+        </form>
+      </div>
     </Dialog>
+
   </div>
 </template>
 
@@ -155,46 +201,26 @@
     padding: 20px;
   }
 
-  h1 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-
-  .empty-cart {
-    text-align: center;
-    font-size: 1.2rem;
-    color: #888;
-  }
-
   table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
     background-color: transparent;
-    /* Fondo de tabla transparente */
   }
 
-  th,
-  td {
+  th, td {
     padding: 12px;
     text-align: left;
     border: 1px solid #ddd;
-    color: #ccc;
-    /* Color gris claro para las letras */
   }
 
   th {
     background-color: #333;
-    /* Fondo gris oscuro para el encabezado */
     color: white;
-    /* Color blanco para el texto del encabezado */
-    font-weight: bold;
   }
 
   td {
     background-color: transparent;
-    /* Fondo transparente en las celdas */
   }
 
   td button {
@@ -220,12 +246,10 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    /* Espacio entre los botones */
   }
 
   button {
     background-color: #28a745;
-    /* Botón verde */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -239,21 +263,16 @@
 
   .registrar-venta {
     background-color: #007bff;
-    /* Botón azul para registrar la venta */
   }
 
   .registrar-venta:hover {
     background-color: #0056b3;
-    /* Hover para el botón de venta */
   }
 
-  /* Estilo para los controles de cantidad */
   .cantidad-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
-    /* Espacio entre los botones y el valor */
   }
 
   .cantidad-controls button {
@@ -275,5 +294,46 @@
     font-size: 1.2rem;
     font-weight: bold;
     color: #333;
+  }
+
+  /* Estilos del formulario de cliente */
+  .formulario-cliente {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: transparent;
+  }
+
+  .formulario-cliente label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+  }
+
+  .input-text {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .cerrar-formulario {
+    margin-top: 10px;
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .cerrar-formulario:hover {
+    background-color: #c82333;
+  }
+
+  .seleccionar-cliente {
+    margin-top: 20px;
+    background-color: #17a2b8;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+  .seleccionar-cliente:hover {
+    background-color: #138496;
   }
 </style>
