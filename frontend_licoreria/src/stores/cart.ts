@@ -1,31 +1,75 @@
-// src/stores/cart.ts
 import { defineStore } from 'pinia'
-import type { ProductoCarrito } from '@/models/productoCarrito' // Importamos el tipo correcto
+import { useAuthStore } from '@/stores/index'
+import http from '@/plugins/axios'
+import router from '@/router'
+import type { ProductoCarrito } from '@/models/productoCarrito'
 
 export const useCartStore = defineStore('cart', {
   state: () => ({
-    // Lista de productos en el carrito
-    productos: [] as ProductoCarrito[], // Aquí cambiamos a ProductoCarrito[]
+    productos: [] as ProductoCarrito[], // Lista de productos en el carrito
   }),
+
   actions: {
     // Acción para agregar un producto al carrito
     agregarAlCarrito(producto: ProductoCarrito) {
       const productoExistente = this.productos.find(p => p.id === producto.id)
       if (productoExistente) {
-        // Si el producto ya está en el carrito, solo incrementamos la cantidad
         productoExistente.cantidad++
       } else {
-        // Si el producto no está en el carrito, lo agregamos con cantidad 1
         this.productos.push({ ...producto, cantidad: 1 })
       }
     },
+
     // Acción para eliminar un producto del carrito
     eliminarDelCarrito(productoId: number) {
       this.productos = this.productos.filter(p => p.id !== productoId)
     },
-    // Acción para limpiar el carrito (por ejemplo, después de realizar una venta)
+
+    // Acción para vaciar el carrito
     vaciarCarrito() {
       this.productos = []
     },
-  },
+
+    // Acción para realizar la venta
+    async realizarVenta(idCliente: number) {
+      const authStore = useAuthStore()
+
+      // Si no hay productos en el carrito, no proceder
+      if (this.productos.length === 0) {
+        console.error('El carrito está vacío')
+        return
+      }
+
+      try {
+        // Obtener el monto total sumando los subtotales de cada producto
+        const montoTotal = this.productos.reduce((total, producto) => {
+          return total + producto.precioVenta * producto.cantidad
+        }, 0)
+
+        // Crear el objeto de venta
+        const ventaData = {
+          idUsuario: authStore.userId, // Obtener idUsuario desde el store de auth
+          idCliente,
+          montoTotal,
+          productos: this.productos.map(producto => ({
+            idProducto: producto.id,
+            cantidad: producto.cantidad,
+          })),
+        }
+
+        // Enviar la venta al backend
+        const response = await http.post('/ventas', ventaData)
+        console.log('Venta realizada con éxito:', response.data)
+
+        // Limpiar el carrito después de realizar la venta
+        this.vaciarCarrito()
+
+        // Redirigir a una página de confirmación o historial
+        router.push('/ventas')
+
+      } catch (error) {
+        console.error('Error al realizar la venta:', error)
+      }
+    }
+  }
 })

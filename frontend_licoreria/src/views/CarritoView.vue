@@ -1,29 +1,61 @@
 <script lang="ts">
-import { useCartStore } from '@/stores/cart'; // Importamos el store de Pinia
-import { computed, ref } from 'vue'; // Computed para calcular el total
-import InputText from 'primevue/inputtext'; // Importamos InputText de PrimeVue
-import Button from 'primevue/button'; // Importamos Button de PrimeVue
-import Dialog from 'primevue/dialog'; // Importamos el componente Dialog para el modal
+import { useCartStore } from '@/stores/cart'; 
+import { computed, ref, onMounted } from 'vue'; 
+import InputText from 'primevue/inputtext'; 
+import Button from 'primevue/button'; 
+import Dialog from 'primevue/dialog'; 
+import http from '@/plugins/axios';  
 
 export default {
   components: {
     InputText,
     Button,
-    Dialog,  // Componente de PrimeVue para el modal
+    Dialog, 
   },
   setup() {
     const cartStore = useCartStore();
 
-    // Estado para mostrar el modal del formulario de cliente
     const mostrarFormularioCliente = ref(false);
 
-    // Estado para almacenar el cliente seleccionado
+    // Estado para almacenar los detalles del cliente seleccionado
     const clienteSeleccionado = ref({
+      id: null,
       ci: '',
-      nombre: '',
-      direccion: '',
-      telefono: ''
+      nombres: '',
+      apellidoPaterno: '',
+      apellidoMaterno: '',
+      email: '',
+      celular: ''
     });
+
+    // Lista de clientes para mostrar en el select
+    const clientes = ref<any[]>([]);
+    const searchCI = ref(''); // Para el select de C.I.
+
+    // Cargar clientes del backend
+    const obtenerClientes = async () => {
+      try {
+        const response = await http.get('/clientes');
+        clientes.value = response.data;
+      } catch (error) {
+        console.error('Error al obtener los clientes', error);
+      }
+    };
+
+    // Cargar clientes al montar el componente
+    onMounted(() => {
+      obtenerClientes();
+    });
+
+    // Cuando se selecciona un C.I., se obtiene la información del cliente
+    function seleccionarClientePorCI() {
+      const clienteEncontrado = clientes.value.find(cliente => cliente.ci === searchCI.value);
+      if (clienteEncontrado) {
+        clienteSeleccionado.value = clienteEncontrado;
+      } else {
+        alert('Cliente no encontrado');
+      }
+    }
 
     // Función para calcular el total del carrito
     const totalCarrito = computed(() => {
@@ -62,7 +94,7 @@ export default {
 
     // Función para registrar la venta
     function registrarVenta() {
-      if (!clienteSeleccionado.value) {
+      if (!clienteSeleccionado.value.id) {
         alert('Debe seleccionar un cliente para completar la venta.');
         return;
       }
@@ -97,11 +129,14 @@ export default {
       aumentarCantidad,
       disminuirCantidad,
       registrarVenta,
-      clienteSeleccionado,  // Datos del cliente
+      clienteSeleccionado,
       formatCurrency,
       mostrarFormulario,
       cerrarFormulario,
-      mostrarFormularioCliente,  // Estado para mostrar el formulario
+      mostrarFormularioCliente,
+      clientes,
+      searchCI,
+      seleccionarClientePorCI
     };
   },
 };
@@ -111,16 +146,15 @@ export default {
   <div class="carrito-view">
     <h1>Carrito de Compras</h1>
 
-    <!-- Mensaje cuando el carrito está vacío -->
     <div v-if="cartStore.productos.length === 0" class="empty-cart">
       <p>Tu carrito está vacío. ¡Agrega algunos productos!</p>
     </div>
 
-    <!-- Tabla de productos en el carrito -->
     <div v-else>
-      <table>
+      <table class="cart-table">
         <thead>
           <tr>
+            <th>N°</th>
             <th>Producto</th>
             <th>Categoría</th>
             <th>Descripción</th>
@@ -131,28 +165,29 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="producto in cartStore.productos" :key="producto.id">
+          <tr v-for="(producto, index) in cartStore.productos" :key="producto.id">
+            <td>{{ index + 1 }}</td>
             <td>{{ producto.nombre }}</td>
             <td>{{ producto.categoria.nombre }}</td>
             <td>{{ producto.descripcion }}</td>
             <td>
               <div class="cantidad-controls">
-                <button @click="disminuirCantidad(producto.id)" :disabled="producto.cantidad === 1">-</button>
+                <button @click="disminuirCantidad(producto.id)" :disabled="producto.cantidad === 1" class="cantidad-btn restar">-</button>
                 <span>{{ producto.cantidad }}</span>
-                <button @click="aumentarCantidad(producto.id, producto.stock)">+</button>
+                <button @click="aumentarCantidad(producto.id, producto.stock)" class="cantidad-btn">+</button>
               </div>
             </td>
-            <td>{{ formatCurrency(producto.precioVenta) }}</td>
+            <td>Bs {{ formatCurrency(producto.precioVenta) }}</td>
             <td>{{ formatCurrency(producto.precioVenta * producto.cantidad) }}</td>
             <td>
-              <button @click="eliminarProducto(producto.id)">Eliminar</button>
+              <button @click="eliminarProducto(producto.id)" class="eliminar-btn">Eliminar</button>
             </td>
           </tr>
         </tbody>
       </table>
 
       <div class="total">
-        <h3>Total: {{ formatCurrency(totalCarrito) }}</h3>
+        <h3>Total:  {{ formatCurrency(totalCarrito) }}</h3>
       </div>
 
       <div class="botones-acciones">
@@ -161,179 +196,202 @@ export default {
       </div>
     </div>
 
-    <!-- Botón para seleccionar cliente -->
-    <button @click="mostrarFormulario" class="seleccionar-cliente">
-      Seleccionar Cliente
-    </button>
+    <button @click="mostrarFormulario" class="seleccionar-cliente">Seleccionar Cliente</button>
 
-    <!-- Modal para ingresar datos del cliente -->
-    <Dialog v-model:visible="mostrarFormularioCliente" header="Formulario de Cliente" :style="{ width: '400px' }" :modal="true" :closable="false">
+    <Dialog v-model:visible="mostrarFormularioCliente" header="Formulario de Cliente" :style="{ width: '700px' }" :modal="true" :closable="false">
       <div class="formulario-cliente">
-        <form>
-          <label for="ci">Cédula:</label>
-          <InputText v-model="clienteSeleccionado.ci" id="ci" placeholder="Ingrese cédula" class="input-text" />
-          <br />
+        <h3>Buscar Cliente por C.I.</h3>
+        
+        <select v-model="searchCI" @change="seleccionarClientePorCI" class="ci-selector">
+          <option value="">Seleccionar C.I.</option>
+          <option v-for="cliente in clientes" :key="cliente.id" :value="cliente.ci">{{ cliente.ci }}</option>
+        </select>
 
-          <label for="nombre">Nombre:</label>
-          <InputText v-model="clienteSeleccionado.nombre" id="nombre" placeholder="Ingrese nombre" class="input-text" />
-          <br />
+        <div v-if="clienteSeleccionado.id">
+          <!-- Estructura de campos con labels encima -->
+          <div class="form-group">
+            <label for="ci">C.I:</label>
+            <InputText id="ci" v-model="clienteSeleccionado.ci" disabled />
+          </div>
 
-          <label for="direccion">Dirección:</label>
-          <InputText v-model="clienteSeleccionado.direccion" id="direccion" placeholder="Ingrese dirección" class="input-text" />
-          <br />
+          <!-- Nombres, Apellido Paterno y Apellido Materno en la misma fila -->
+          <div class="form-group row">
+            <div class="col">
+              <label for="nombres">Nombres:</label>
+              <InputText id="nombres" v-model="clienteSeleccionado.nombres" disabled />
+            </div>
+            <div class="col">
+              <label for="apellidoPaterno">Apellido Paterno:</label>
+              <InputText id="apellidoPaterno" v-model="clienteSeleccionado.apellidoPaterno" disabled />
+            </div>
+            <div class="col">
+              <label for="apellidoMaterno">Apellido Materno:</label>
+              <InputText id="apellidoMaterno" v-model="clienteSeleccionado.apellidoMaterno" disabled />
+            </div>
+          </div>
 
-          <label for="telefono">Teléfono:</label>
-          <InputText v-model="clienteSeleccionado.telefono" id="telefono" placeholder="Ingrese teléfono" class="input-text" />
-          <br />
+          <div class="form-group row">
+            <div class="col">
+              <label for="email">Email:</label>
+              <InputText id="email" v-model="clienteSeleccionado.email" disabled />
+            </div>
+            <div class="col">
+              <label for="celular">Celular:</label>
+              <InputText id="celular" v-model="clienteSeleccionado.celular" disabled />
+            </div>
+          </div>
+        </div>
 
-          <Button label="Cerrar" icon="pi pi-times" @click="cerrarFormulario" class="cerrar-formulario" />
-        </form>
+        <!-- Botón Cerrar con estilo actualizado -->
+        <div class="form-buttons">
+      <Button label="Cerrar" icon="pi pi-times" @click="cerrarFormulario" class="cerrar-formulario" />
+      <Button label="Aceptar"  class="aceptar-formulario" />
+    </div>
       </div>
     </Dialog>
-
   </div>
 </template>
 
 <style scoped>
-  .carrito-view {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+.carrito-view {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: transparent;
-  }
+.cart-table th, .cart-table td {
+  background-color: transparent !important;
+  padding: 12px 15px;
+  text-align: left;
+}
 
-  th, td {
-    padding: 12px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
+.total {
+  margin-top: 15px;
+  text-align: right;
+}
 
-  th {
-    background-color: #333;
-    color: white;
-  }
+.botones-acciones {
+  margin-top: 20px;
+  text-align: center;
+}
 
-  td {
-    background-color: transparent;
-  }
+button {
+  background-color: #28a745;
+  color: white;
+  border: 1px solid #000;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 5px;
+}
 
-  td button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-  }
+button:hover {
+  background-color: #218838;
+}
 
-  td button:hover {
-    background-color: #218838;
-  }
+.registrar-venta {
+  background-color: #007bff;
+}
 
-  .total {
-    margin-top: 20px;
-    text-align: right;
-  }
+.registrar-venta:hover {
+  background-color: #0056b3;
+}
 
-  .botones-acciones {
-    margin-top: 20px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-  }
+.eliminar-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
 
-  button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+.eliminar-btn:hover {
+  background-color: #fc0019;
+}
 
-  button:hover {
-    background-color: #218838;
-  }
+.cantidad-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  .registrar-venta {
-    background-color: #007bff;
-  }
+.cantidad-btn {
+  padding: 5px 10px;
+  border: 1px solid #000;
+}
 
-  .registrar-venta:hover {
-    background-color: #0056b3;
-  }
+/* Estilo para mantener la estructura en 3 campos arriba y 2 abajo */
+.formulario-cliente {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-  .cantidad-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.ci-selector {
+  width: 150%;
+  max-width: 150px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  .cantidad-controls button {
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    background-color: #f0f0f0;
-    color: #333;
-    cursor: pointer;
-  }
+.form-group {
+  margin-bottom: 15px;
+}
 
-  .cantidad-controls button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
+.form-group.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
 
-  .cantidad-controls span {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-  }
+.col {
+  width: 31%; /* Ajuste para que los tres campos quepan en una fila */
+}
 
-  /* Estilos del formulario de cliente */
-  .formulario-cliente {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: transparent;
-  }
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
 
-  .formulario-cliente label {
-    font-size: 1rem;
-    margin-bottom: 5px;
-    display: block;
-    color: #333;
-  }
+.dialog-content {
+  max-width: 700px;
+}
 
-  .input-text {
-    width: 100%;
-    margin-bottom: 10px;
-  }
+/* Estilo para el botón cerrar sin cambio de color al pasar el cursor */
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
 
-  .cerrar-formulario {
-    margin-top: 10px;
-    background-color: #dc3545;
-    color: white;
-  }
+.aceptar-formulario {
+  background-color: #dc3545;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-  .cerrar-formulario:hover {
-    background-color: #c82333;
-  }
+.aceptar-formulario:hover {
+  background-color: #c82333;
+}
 
-  .seleccionar-cliente {
-    margin-top: 20px;
-    background-color: #17a2b8;
-    color: white;
-    padding: 10px 20px;
-    cursor: pointer;
-  }
 
-  .seleccionar-cliente:hover {
-    background-color: #138496;
-  }
+
+.cerrar-formulario {
+  background-color: #28a745;  
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto;
+  max-width: 200px;
+}
+
+.cerrar-formulario:hover {
+  background-color: #218838;  
+}
 </style>
