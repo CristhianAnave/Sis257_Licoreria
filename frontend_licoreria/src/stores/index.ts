@@ -19,8 +19,11 @@ const useAuthStore = defineStore('auth', {
     async login(usuario: string, clave: string) {
       try {
         const response = await http.post('auth/login', { usuario, clave })
+       
+        console.log('Respuesta del backend:', response.data);
+
         const usuarioLogueado = response.data.usuario
-        this.user = usuarioLogueado // Guardamos el objeto completo de usuario
+        this.user = usuarioLogueado; // Guardamos el objeto completo de usuario
 
         // Guardamos el objeto `user` como una cadena JSON
         localStorage.setItem('user', JSON.stringify(this.user))
