@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVentaDto } from './dto/create-venta.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Venta } from './entities/venta.entity';
@@ -19,12 +15,9 @@ export class VentasService {
     private detalleventaRepository: Repository<Detalleventa>,
   ) {}
 
+  // Elimina la verificación de "venta existente" para permitir múltiples ventas por cliente
   async create(createVentaDto: CreateVentaDto): Promise<Venta> {
-    const existe = await this.ventasRepository.findOne({
-      where: { cliente: { id: createVentaDto.idCliente } },
-    });
-    if (existe)
-      throw new ConflictException('La venta ya existe para este cliente');
+    // Ya no estamos verificando si existe una venta para este cliente
 
     // Crear la venta sin montoTotal
     const venta = new Venta();
