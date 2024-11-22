@@ -18,7 +18,7 @@ export class DetalleventaService {
     @InjectRepository(Producto)
     private productoRepository: Repository<Producto>,
     @InjectRepository(Venta)
-    private ventaRepository: Repository<Venta>,
+    private ventaRepository: Repository<Venta>, // Inyectamos el servicio de Venta
   ) {}
 
   // Crear múltiples detalles de venta
@@ -84,23 +84,6 @@ export class DetalleventaService {
       detallesGuardados.push(savedDetalleventa);
     }
 
-    // Actualizar el monto total de la venta después de agregar los detalles
-    if (detallesGuardados.length > 0) {
-      const ventaId = createDetalleventaDtos[0].idVenta;
-      const venta = await this.ventaRepository.findOne({
-        where: { id: ventaId },
-        relations: ['detalleventas'],
-      });
-
-      if (venta) {
-        venta.montoTotal = venta.detalleventas.reduce(
-          (total, detalle) => total + detalle.subtotal,
-          0,
-        );
-        await this.ventaRepository.save(venta);
-      }
-    }
-
     return detallesGuardados;
   }
 
@@ -147,13 +130,6 @@ export class DetalleventaService {
     // Actualizar el stock del producto después de la venta
     producto.stock -= createDetalleventaDto.cantidad;
     await this.productoRepository.save(producto); // Guardar el producto con el nuevo stock
-
-    // Actualizamos el montoTotal de la venta
-    venta.montoTotal = venta.detalleventas.reduce(
-      (total, detalle) => total + detalle.subtotal,
-      0,
-    );
-    await this.ventaRepository.save(venta);
 
     return savedDetalleventa;
   }
@@ -212,14 +188,6 @@ export class DetalleventaService {
     const updatedDetalleventa =
       await this.detalleventaRepository.save(detalleventa);
 
-    // Actualizar el montoTotal de la venta
-    const venta = detalleventa.venta;
-    venta.montoTotal = venta.detalleventas.reduce(
-      (total, detalle) => total + detalle.subtotal,
-      0,
-    );
-    await this.ventaRepository.save(venta);
-
     return updatedDetalleventa;
   }
 
@@ -237,13 +205,5 @@ export class DetalleventaService {
     // Marcar el detalle como eliminado
     detalleventa.fechaEliminacion = new Date(); // Establecer la fecha de eliminación
     await this.detalleventaRepository.save(detalleventa);
-
-    // Actualizar el montoTotal de la venta
-    const venta = detalleventa.venta;
-    venta.montoTotal = venta.detalleventas.reduce(
-      (total, detalle) => total + detalle.subtotal,
-      0,
-    );
-    await this.ventaRepository.save(venta);
   }
 }

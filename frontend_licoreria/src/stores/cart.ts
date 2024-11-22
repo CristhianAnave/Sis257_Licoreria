@@ -37,8 +37,17 @@ export const useCartStore = defineStore('cart', {
       this.idCliente = idCliente; // Guardamos el idCliente en el estado
     },
 
+ // Acción para calcular el monto total del carrito
+    calcularMontoTotal(): number {
+      return this.productos.reduce((total, producto) => {
+        const precioVenta = parseFloat(producto.precioVenta.toString())
+        const cantidad = parseInt(producto.cantidad.toString(), 10)
+        return total + (precioVenta * cantidad)
+      }, 0)
+    },
+
     // Acción para realizar la venta
-    async realizarVenta(idCliente: number) {
+    async realizarVenta() {
       const authStore = useAuthStore()
 
       // Si no hay productos en el carrito, no proceder
@@ -54,12 +63,9 @@ export const useCartStore = defineStore('cart', {
 
       try {
         // Obtener el monto total sumando los subtotales de cada producto
-        const montoTotal = this.productos.reduce((total, producto) => {
-          const precioVenta = parseFloat(producto.precioVenta.toString()) // Asegurarse de que sea un número
-          const cantidad = parseInt(producto.cantidad.toString(), 10) // Asegurarse de que sea un número
-          return total + (precioVenta * cantidad) // Calculamos el subtotal por producto
-        }, 0)
-
+        const montoTotal = this.calcularMontoTotal();
+          
+        
         // Crear el objeto de venta
         const ventaData = {
           idUsuario: authStore.userId, // Obtener idUsuario desde el store de auth

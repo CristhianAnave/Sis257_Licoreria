@@ -33,7 +33,6 @@ export class Venta {
     precision: 10,
     scale: 2,
     nullable: true,
-    name: 'monto_total',
   })
   montoTotal: number;
 

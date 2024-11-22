@@ -19,6 +19,7 @@
     },
     setup() {
       const cartStore = useCartStore();
+      
       const mostrarFormularioCliente = ref(false);
 
       // Estado para almacenar los detalles del cliente seleccionado
@@ -66,11 +67,10 @@
 
       // Función para calcular el total del carrito
       const totalCarrito = computed(() => {
-        return cartStore.productos.reduce((total, producto) => {
-          return total + producto.precioVenta * producto.cantidad;
-        }, 0);
-      });
-
+  return cartStore.productos.reduce((total, producto) => {
+    return total + producto.precioVenta * producto.cantidad;
+  }, 0);
+});
       // Función para eliminar un producto del carrito
       function eliminarProducto(productoId: number) {
         cartStore.eliminarDelCarrito(productoId);
@@ -99,81 +99,91 @@
         }
       }
 //Duncion registrar venta dfunciona
-      function registrarVenta() {
-        if (!clienteSeleccionado.value.id) {
-          alert('Debe seleccionar un cliente para completar la venta.');
-          return;
-        }
+function registrarVenta() {
+  if (!clienteSeleccionado.value.id) {
+    alert('Debe seleccionar un cliente para completar la venta.');
+    return;
+  }
 
-        if (cartStore.productos.length === 0) {
-          alert('El carrito está vacío. Agrega productos para realizar la venta.');
-          return;
-        }
+  if (cartStore.productos.length === 0) {
+    alert('El carrito está vacío. Agrega productos para realizar la venta.');
+    return;
+  }
 
-        const authStore = useAuthStore();
-        const token = authStore.token;
-        const userId = authStore.userId;
+  const authStore = useAuthStore();
+  const token = authStore.token;
+  const userId = authStore.userId;
 
-        if (!userId) {
-          console.error('El ID del usuario no está disponible.');
-          return;
-        }
+  if (!userId) {
+    console.error('El ID del usuario no está disponible.');
+    return;
+  }
 
-        if (!token) {
-          alert('Debe iniciar sesión para completar la venta.');
-          return;
-        }
+  if (!token) {
+    alert('Debe iniciar sesión para completar la venta.');
+    return;
+  }
 
-        const ventaData = {
-          idUsuario: userId,
-          idCliente: clienteSeleccionado.value.id,
-          montoTotal: totalCarrito.value,
+  // Calcular el monto total a partir de los productos en el carrito (igual que en registrarVentaQr)
+  const montoTotal = totalCarrito.value;  // totalCarrito es la propiedad computada que ya calcula el monto
+
+  const ventaData = {
+    idUsuario: userId,
+    idCliente: clienteSeleccionado.value.id,
+    montoTotal: montoTotal,  // Usamos el montoTotal calculado
+  };
+
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  // Registrar la venta
+  http.post('/ventas', ventaData, config)
+    .then(response => {
+      const idVenta = response.data.id;
+
+      // Crear los detalles de la venta
+      const detalleVentaData = cartStore.productos.map(producto => {
+        const cantidad = typeof producto.cantidad === 'number' ? producto.cantidad : parseInt(producto.cantidad, 10);
+        const precioVenta = typeof producto.precioVenta === 'number' ? producto.precioVenta : parseFloat(producto.precioVenta);
+        const subtotal = cantidad * precioVenta;
+
+        return {
+          idProducto: producto.id,
+          precioVenta: precioVenta,
+          cantidad: cantidad,
+          subtotal: subtotal,
+          idVenta: idVenta,  // Usamos el idVenta que nos devuelve la creación de la venta
         };
+      });
 
-        const config = {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        };
-
-        http.post('/ventas', ventaData, config)
-          .then(response => {
-            const idVenta = response.data.id;
-
-            const detalleVentaData = cartStore.productos.map(producto => ({
-              idProducto: producto.id,
-              precioVenta: +producto.precioVenta,
-              cantidad: producto.cantidad,
-              subtotal: producto.cantidad * producto.precioVenta,
-              idVenta: Number(idVenta),
-            }));
-
-            if (detalleVentaData.some(detalle => !detalle.idProducto || detalle.cantidad <= 0 || detalle.precioVenta <= 0)) {
-              console.error('Datos inválidos en detalleVentaData', detalleVentaData);
-              alert('Los datos de los productos en el carrito no son válidos.');
-              return;
-            }
-
-            console.log(detalleVentaData);
-
-            return http.post('/detalleventa', detalleVentaData, config);
-          })
-          .then(() => {
-            cartStore.vaciarCarrito();
-            alert('Venta registrada con éxito');
-          })
-          .catch(error => {
-            if (error.response) {
-              console.error('Error de backend:', error.response.data);
-              alert(`Error del servidor: ${error.response.data.message || 'Intente nuevamente.'}`);
-            } else {
-              console.error('Error desconocido:', error);
-              alert('Hubo un error al conectar con el servidor. Intente nuevamente.');
-            }
-          });
+      // Verificar que los datos del carrito sean válidos
+      if (detalleVentaData.some(detalle => !detalle.idProducto || detalle.cantidad <= 0 || detalle.precioVenta <= 0)) {
+        console.error('Datos inválidos en detalleVentaData', detalleVentaData);
+        alert('Los datos de los productos en el carrito no son válidos.');
+        return;
       }
 
+      // Registrar los detalles de la venta en el backend
+      return http.post('/detalleventa', detalleVentaData, config);
+    })
+    .then(() => {
+      cartStore.vaciarCarrito();
+      alert('Venta registrada con éxito');
+    })
+    .catch(error => {
+      if (error.response) {
+        console.error('Error de backend:', error.response.data);
+        alert(`Error del servidor: ${error.response.data.message || 'Intente nuevamente.'}`);
+      } else {
+        console.error('Error desconocido:', error);
+        alert('Hubo un error al conectar con el servidor. Intente nuevamente.');
+      }
+    });
+}
 
 
 
@@ -379,8 +389,8 @@
 </script>
 
 <template>
-  <div class="carrito-view">
-    <h1>Carrito de Compras</h1>
+    <div class="m-8" >
+      <h1>Carrito de Compras</h1>
          
     <div v-if="cartStore.productos.length === 0" class="empty-cart">
       <p>Tu carrito está vacío. ¡Agrega algunos productos!</p>

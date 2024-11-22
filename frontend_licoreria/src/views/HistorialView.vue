@@ -13,14 +13,14 @@ export default {
     const ventas = ref<any[]>([]);
     const mostrarDetalles = ref(false);
     const ventaSeleccionada = ref<any>(null);
-    const mostrarVentas = ref(false); // Control para mostrar/ocultar ventas
-    const noVentas = ref(false); // Mostrar mensaje de "no hay ventas" solo cuando corresponde
+    const mostrarVentas = ref(false);
+    const noVentas = ref(false);
 
-     // Función para formatear fechas
-     const formatDate = (date: string) => {
+    const formatDate = (date: string) => {
       const d = new Date(date);
       return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
     };
+
     const obtenerVentas = async () => {
       try {
         const response = await http.get('/ventas');
@@ -34,6 +34,7 @@ export default {
     const verDetalles = async (ventaId: number) => {
       try {
         const response = await http.get(`/ventas/${ventaId}`);
+        console.log(response.data); // Aquí es donde agregas el console.log
         ventaSeleccionada.value = response.data;
         mostrarDetalles.value = true;
       } catch (error) {
@@ -72,7 +73,7 @@ export default {
 </script>
 
 <template>
-  <div class="historial-view">
+  <div class="m-8">
     <h1>Historial de Ventas</h1>
 
     <!-- Botones Mostrar Todo y Ocultar -->

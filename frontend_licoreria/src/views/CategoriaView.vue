@@ -29,7 +29,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="m-8">
     <h1>Categoría</h1>
     <Button label="Crear Nuevo" icon="pi pi plus" @click="handleCreate" />
     <!-- boton que mostrara CREAR nuevo-->

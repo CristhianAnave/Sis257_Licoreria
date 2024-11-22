@@ -37,7 +37,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="m-8">
     <h1>Productos Disponibles</h1>
 
     <!-- Mensaje cuando no hay productos disponibles -->

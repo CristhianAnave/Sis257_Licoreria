@@ -27,7 +27,7 @@ function handleGuardar(){
 }
 </script>
 <template>
-  <div>
+  <div class="m-8">
     <h1>Proveedores</h1> 
     <Button label="Crear Nuevo" icon="pi pi-plus" @click="handleCreate" />
     <ProveedorList ref="proveedorListRef" @edit="handleEdit"/>

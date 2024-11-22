@@ -1,50 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateVentaDto } from './dto/create-venta.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Venta } from './entities/venta.entity';
 import { Repository } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Cliente } from 'src/clientes/entities/cliente.entity';
-import { Detalleventa } from 'src/detalleventa/entities/detalleventa.entity';
+import { CreateVentaDto } from './dto/create-venta.dto';
 
 @Injectable()
 export class VentasService {
   constructor(
     @InjectRepository(Venta) private ventasRepository: Repository<Venta>,
-    @InjectRepository(Detalleventa)
-    private detalleventaRepository: Repository<Detalleventa>,
   ) {}
 
-  // Elimina la verificación de "venta existente" para permitir múltiples ventas por cliente
+  // Método para crear una venta, ya recibiendo el montoTotal desde el frontend
   async create(createVentaDto: CreateVentaDto): Promise<Venta> {
-    // Ya no estamos verificando si existe una venta para este cliente
-
-    // Crear la venta sin montoTotal
+    // Crear la venta sin calcular montoTotal, solo recibiendo los valores
     const venta = new Venta();
     venta.usuarios = { id: createVentaDto.idUsuario } as Usuario;
     venta.cliente = { id: createVentaDto.idCliente } as Cliente;
+    venta.montoTotal = createVentaDto.montoTotal; // Recibir el montoTotal directamente
 
-    // Guardamos la venta inicialmente
-    const savedVenta = await this.ventasRepository.save(venta);
-
-    // Obtenemos los detalles de venta para esta venta recién creada
-    const detallesVenta = await this.detalleventaRepository.find({
-      where: { venta: { id: savedVenta.id } },
-    });
-
-    // Calcular el monto total
-    const montoTotal = detallesVenta.reduce(
-      (total, detalle) => total + detalle.subtotal,
-      0,
-    );
-
-    // Actualizar la venta con el montoTotal calculado
-    savedVenta.montoTotal = montoTotal;
-
-    // Guardamos la venta con el monto total actualizado
-    return this.ventasRepository.save(savedVenta);
+    // Guardamos la venta con el monto total enviado
+    return this.ventasRepository.save(venta);
   }
 
+  // Método para obtener todas las ventas
   async findAll(): Promise<Venta[]> {
     const ventas = await this.ventasRepository.find({
       relations: ['usuarios', 'cliente'],
@@ -57,10 +37,11 @@ export class VentasService {
     }));
   }
 
+  // Método para obtener una venta por su ID
   async findOne(id: number): Promise<Venta> {
     const venta = await this.ventasRepository.findOne({
       where: { id },
-      relations: ['usuarios', 'cliente', 'detalleventas'],
+      relations: ['usuarios', 'cliente'],
     });
     if (!venta) {
       throw new NotFoundException(`La venta ${id} no existe`);
@@ -81,6 +62,9 @@ export class VentasService {
     }
     if (updateVentaDto.idCliente) {
       venta.cliente = { id: updateVentaDto.idCliente } as Cliente;
+    }
+    if (updateVentaDto.montoTotal) {
+      venta.montoTotal = updateVentaDto.montoTotal; // Actualizar el montoTotal si lo envían
     }
 
     // Guardar la venta con los cambios parciales
