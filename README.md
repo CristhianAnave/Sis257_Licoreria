@@ -8,7 +8,7 @@ Proyecto de la materia sis257 una aplicacion web para la gestión de una licorer
 ```
 ## Descripcion
 
-La Licorería "Solo un traguito" es una tienda de venta de bebidas alcohólicas una de las mas reconocidas por su variendad de 
+La Licorería "El ultimo Trago" es una tienda de venta de bebidas alcohólicas una de las mas reconocidas por su variendad de 
 
 producto y atencion al cliente esta licoreria esta hubicado en la Calle Rabelo, #122 en Sucre.
 
@@ -18,7 +18,7 @@ brindando una experiencia de compra rápida, conveniente y segura para sus clien
 
 Donde se estaca por la variedad de productos y responsabilidad en la venta de bebidas alcohólicas.
 
-La licoreria "Solo un traguito" otorga una  variedad de vinos, cervezas, licores importados, ron, whisky y tequilas
+La licoreria "El ultimo Trago" otorga una  variedad de vinos, cervezas, licores importados, ron, whisky y tequilas
 
 como tambien copas, abridores, hieleras y kits de coctelería.
 
