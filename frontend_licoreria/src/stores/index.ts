@@ -26,6 +26,7 @@ const useAuthStore = defineStore('auth', {
         this.user = usuarioLogueado;  // Guardamos el objeto completo de usuario
 
         // Guardamos el objeto `user` como una cadena JSON
+      
         localStorage.setItem('user', JSON.stringify(this.user)); 
         localStorage.setItem('token', response.data.access_token || '');  // Guardamos el token
         localStorage.setItem('role', response.data.rol || '');  // Guardamos el rol

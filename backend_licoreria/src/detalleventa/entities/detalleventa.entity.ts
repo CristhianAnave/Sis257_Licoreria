@@ -16,13 +16,21 @@ export class Detalleventa {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ManyToOne(() => Venta, (venta) => venta.detalleventas)
+  @JoinColumn({ name: 'id_venta', referencedColumnName: 'id' })
+  venta: Venta;
+
+  @ManyToOne(() => Producto, (producto) => producto.detalleventas)
+  @JoinColumn({ name: 'id_producto', referencedColumnName: 'id' })
+  producto: Producto;
+
+  @Column('decimal', { precision: 10, scale: 2, name: 'precio_venta' })
+  precioVenta: number;
+
   @Column('int')
   cantidad: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
-  precioVenta: number;
-
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, name: 'Sub_Total' })
   subtotal: number;
 
   @CreateDateColumn({ name: 'fecha_creacion' })
@@ -33,12 +41,4 @@ export class Detalleventa {
 
   @DeleteDateColumn({ name: 'fecha_elimanacion', select: false })
   fechaEliminacion: Date;
-
-  @ManyToOne(() => Venta, (venta) => venta.detalleventas)
-  @JoinColumn({ name: 'id_venta', referencedColumnName: 'id' })
-  venta: Venta;
-
-  @ManyToOne(() => Producto, (producto) => producto.detalleventas)
-  @JoinColumn({ name: 'id_producto', referencedColumnName: 'id' })
-  producto: Producto;
 }

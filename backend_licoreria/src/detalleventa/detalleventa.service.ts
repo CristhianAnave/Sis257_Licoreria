@@ -21,6 +21,89 @@ export class DetalleventaService {
     private ventaRepository: Repository<Venta>,
   ) {}
 
+  // Crear múltiples detalles de venta
+  async createBulk(
+    createDetalleventaDtos: CreateDetalleventaDto[],
+  ): Promise<Detalleventa[]> {
+    const detallesGuardados: Detalleventa[] = [];
+
+    for (const dto of createDetalleventaDtos) {
+      const existe = await this.detalleventaRepository.findOne({
+        where: {
+          venta: { id: dto.idVenta },
+          producto: { id: dto.idProducto },
+        },
+      });
+      if (existe) {
+        throw new ConflictException(
+          `El detalle de venta ya existe para el producto con ID ${dto.idProducto}`,
+        );
+      }
+
+      const producto = await this.productoRepository.findOne({
+        where: { id: dto.idProducto },
+      });
+      if (!producto) {
+        throw new NotFoundException(
+          `Producto con ID ${dto.idProducto} no encontrado`,
+        );
+      }
+
+      // Verificar stock disponible
+      if (producto.stock < dto.cantidad) {
+        throw new ConflictException(
+          `No hay suficiente stock para el producto ${producto.nombre}. Solo quedan ${producto.stock} unidades.`,
+        );
+      }
+
+      const venta = await this.ventaRepository.findOne({
+        where: { id: dto.idVenta },
+        relations: ['detalleventas'], // Asegurarnos de cargar los detalles
+      });
+      if (!venta) {
+        throw new NotFoundException(
+          `Venta con ID ${dto.idVenta} no encontrada`,
+        );
+      }
+
+      const detalleventa = new Detalleventa();
+      detalleventa.venta = venta;
+      detalleventa.producto = producto;
+      detalleventa.cantidad = dto.cantidad;
+      detalleventa.precioVenta = producto.precioVenta;
+      detalleventa.subtotal = dto.cantidad * producto.precioVenta;
+
+      const savedDetalleventa =
+        await this.detalleventaRepository.save(detalleventa);
+
+      // Actualizar el stock del producto
+      producto.stock -= dto.cantidad;
+      await this.productoRepository.save(producto);
+
+      // Agregar el detalle guardado a la lista
+      detallesGuardados.push(savedDetalleventa);
+    }
+
+    // Actualizar el monto total de la venta después de agregar los detalles
+    if (detallesGuardados.length > 0) {
+      const ventaId = createDetalleventaDtos[0].idVenta;
+      const venta = await this.ventaRepository.findOne({
+        where: { id: ventaId },
+        relations: ['detalleventas'],
+      });
+
+      if (venta) {
+        venta.montoTotal = venta.detalleventas.reduce(
+          (total, detalle) => total + detalle.subtotal,
+          0,
+        );
+        await this.ventaRepository.save(venta);
+      }
+    }
+
+    return detallesGuardados;
+  }
+
   // Método para crear un detalle de venta
   async create(
     createDetalleventaDto: CreateDetalleventaDto,

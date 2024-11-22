@@ -11,8 +11,9 @@ import {
 import { DetalleventaService } from './detalleventa.service';
 import { CreateDetalleventaDto } from './dto/create-detalleventa.dto';
 import { Detalleventa } from './entities/detalleventa.entity';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('detalleventa') // Swagger
 @ApiBearerAuth() // Para la documentación y autenticación JWT
@@ -24,9 +25,10 @@ export class DetalleventaController {
   // Crear un nuevo detalle de venta
   @Post()
   async create(
-    @Body() createDetalleventaDto: CreateDetalleventaDto,
-  ): Promise<Detalleventa> {
-    return this.detalleventaService.create(createDetalleventaDto);
+    @Body() createDetalleventaDto: CreateDetalleventaDto[],
+  ): Promise<Detalleventa[]> {
+    console.log('Recibido en el backend:', createDetalleventaDto);
+    return this.detalleventaService.createBulk(createDetalleventaDto);
   }
 
   // Obtener todos los detalles de venta

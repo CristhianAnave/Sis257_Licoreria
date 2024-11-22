@@ -61,6 +61,11 @@ const router = createRouter({
       name: 'carrito',
       component: () => import('../views/CarritoView.vue'),
     },
+    {
+      path: '/historial/',
+      name: 'historial',
+      component: () => import('../views/HistorialView.vue'),
+    },
   ],
 })
 

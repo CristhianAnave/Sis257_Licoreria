@@ -46,7 +46,15 @@ export class VentasService {
   }
 
   async findAll(): Promise<Venta[]> {
-    return this.ventasRepository.find({ relations: ['usuarios', 'cliente'] });
+    const ventas = await this.ventasRepository.find({
+      relations: ['usuarios', 'cliente'],
+    });
+
+    // Mapear las ventas para asegurar que la fecha esté en formato ISO si es necesario
+    return ventas.map((venta) => ({
+      ...venta,
+      fecha_creacion: venta.fechaCreacion.toISOString(), // Formatear la fecha de creación a formato ISO
+    }));
   }
 
   async findOne(id: number): Promise<Venta> {

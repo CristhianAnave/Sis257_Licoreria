@@ -24,7 +24,9 @@
           <RouterLink to="/productos">Productos</RouterLink>
           <RouterLink to="/productosVenta">Produtos Disponibles</RouterLink>
           <RouterLink to="/carrito">Carrito de Compras</RouterLink>
+          <RouterLink to="/historial">Historial de Ventas</RouterLink>
           <RouterLink to="/about">Acerca De</RouterLink>
+
           <a @click="authStore.logout()" class="text-danger">Salir</a>
         </span>
       </nav>

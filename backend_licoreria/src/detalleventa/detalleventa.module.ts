@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { DetalleventaService } from './detalleventa.service';
 import { DetalleventaController } from './detalleventa.controller';
 import { Detalleventa } from './entities/detalleventa.entity';
@@ -9,10 +9,11 @@ import { VentasModule } from 'src/ventas/ventas.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Detalleventa]),
-    ProductosModule,
-    VentasModule,
+    forwardRef(() => ProductosModule), // Manejo de dependencias circulares
+    forwardRef(() => VentasModule), // Manejo de dependencias circulares
   ],
   controllers: [DetalleventaController],
   providers: [DetalleventaService],
+  exports: [DetalleventaService], // Exportar el servicio
 })
 export class DetalleventaModule {}

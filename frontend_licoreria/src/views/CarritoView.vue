@@ -5,7 +5,7 @@
   import Button from 'primevue/button';
   import Dialog from 'primevue/dialog';
   import http from '@/plugins/axios';
-   import { useAuthStore } from '@/stores/index'
+  import { useAuthStore } from '@/stores/index'
 
   export default {
     components: {
@@ -60,7 +60,7 @@
 
 
 
-      
+
       // Función para calcular el total del carrito
       const totalCarrito = computed(() => {
         return cartStore.productos.reduce((total, producto) => {
@@ -97,68 +97,80 @@
       }
 
 
-
       function registrarVenta() {
-  // Verificar si el cliente está seleccionado
-  if (!clienteSeleccionado.value.id) {
-    alert('Debe seleccionar un cliente para completar la venta.');
-    return;
-  }
+        if (!clienteSeleccionado.value.id) {
+          alert('Debe seleccionar un cliente para completar la venta.');
+          return;
+        }
 
-  // Verificar si el carrito tiene productos
-  if (cartStore.productos.length === 0) {
-    alert('El carrito está vacío. Agrega productos para realizar la venta.');
-    return;
-  }
+        if (cartStore.productos.length === 0) {
+          alert('El carrito está vacío. Agrega productos para realizar la venta.');
+          return;
+        }
 
-  // Obtener el token de autenticación desde el store
-  const authStore = useAuthStore();
-  console.log('Estado del authStore:', authStore.user);
-  const token = authStore.token;
-  const userId = authStore.userId;
+        const authStore = useAuthStore();
+        const token = authStore.token;
+        const userId = authStore.userId;
 
- if(!userId) {
-  console.error('El ID del usuario no está disponible.');
-  return;
- }  
-  // Verificar si el token está presente
-  if (!token) {
-    alert('Debe iniciar sesión para completar la venta.');
-    return;
-  }
+        if (!userId) {
+          console.error('El ID del usuario no está disponible.');
+          return;
+        }
 
-  // Preparar los datos de la venta
-  const ventaData = {
-    idUsuario: userId,  // Asegúrate de que es un número
-    idCliente: clienteSeleccionado.value.id,  // Asegúrate de que es un número
-    montoTotal: typeof totalCarrito.value === 'string' ? parseFloat(totalCarrito.value) : totalCarrito.value,
-    productos: cartStore.productos.map(producto => ({
-    idProducto: producto.id,  // Asegúrate de que es un número
-    precioVenta: typeof producto.precioVenta === 'string' ? parseFloat(producto.precioVenta) : producto.precioVenta,
-    cantidad: producto.cantidad,  // Asegúrate de que es un número
-    subtotal: producto.cantidad * (typeof producto.precioVenta === 'string' ? parseFloat(producto.precioVenta) : producto.precioVenta), // Calcular subTotal
-  })),
-    // Verificar si 'totalCarrito.value' es un string y convertirlo a número
-};
-  // Enviar la venta al backend con el token en los encabezados
-  http.post('/ventas', ventaData, {
-    headers: {
-      'Authorization': `Bearer ${token}`, // Enviar el token aquí
-    },
-  })
-    .then(response => {
-      // Vaciar el carrito después de registrar la venta
-      cartStore.vaciarCarrito();
+        if (!token) {
+          alert('Debe iniciar sesión para completar la venta.');
+          return;
+        }
 
-      // Notificar al usuario que la venta fue registrada
-      alert('Venta registrada con éxito');
-    })
-    .catch(error => {
-      console.error('Error al registrar la venta', error);
-      alert('Hubo un error al registrar la venta. Intente nuevamente.');
-    });
-}
+        const ventaData = {
+          idUsuario: userId,
+          idCliente: clienteSeleccionado.value.id,
+          montoTotal: totalCarrito.value,
+        };
 
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        };
+
+        http.post('/ventas', ventaData, config)
+          .then(response => {
+            const idVenta = response.data.id;
+
+            const detalleVentaData = cartStore.productos.map(producto => ({
+              idProducto: producto.id,
+              precioVenta: +producto.precioVenta,
+              cantidad: producto.cantidad,
+              subtotal: producto.cantidad * producto.precioVenta,
+              idVenta: Number(idVenta),
+            }));
+
+            if (detalleVentaData.some(detalle => !detalle.idProducto || detalle.cantidad <= 0 || detalle.precioVenta <= 0)) {
+              console.error('Datos inválidos en detalleVentaData', detalleVentaData);
+              alert('Los datos de los productos en el carrito no son válidos.');
+              return;
+            }
+
+            console.log(detalleVentaData);
+
+            return http.post('/detalleventa', detalleVentaData, config);
+          })
+          .then(() => {
+            cartStore.vaciarCarrito();
+            alert('Venta registrada con éxito');
+          })
+          .catch(error => {
+            if (error.response) {
+              console.error('Error de backend:', error.response.data);
+              alert(`Error del servidor: ${error.response.data.message || 'Intente nuevamente.'}`);
+            } else {
+              console.error('Error desconocido:', error);
+              alert('Hubo un error al conectar con el servidor. Intente nuevamente.');
+            }
+          });
+      }
       // Función para formatear la moneda
       function formatCurrency(value: number): string {
         return value.toLocaleString('es-BO', {
@@ -180,13 +192,13 @@
       }
 
       function aceptarCliente() {
-      if (clienteSeleccionado.value.id) {
-        cartStore.seleccionarCliente(clienteSeleccionado.value.id);  // Guarda el idCliente en el store
-        mostrarFormularioCliente.value = false; // Cierra el formulario
-      } else {
-        alert('Debe seleccionar un cliente');
+        if (clienteSeleccionado.value.id) {
+          cartStore.seleccionarCliente(clienteSeleccionado.value.id);  // Guarda el idCliente en el store
+          mostrarFormularioCliente.value = false; // Cierra el formulario
+        } else {
+          alert('Debe seleccionar un cliente');
+        }
       }
-    }
 
       return {
         cartStore,

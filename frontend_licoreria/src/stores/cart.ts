@@ -31,10 +31,10 @@ export const useCartStore = defineStore('cart', {
       this.productos = []
     },
 
-      // Acción para seleccionar un cliente
-      seleccionarCliente(idCliente: number) {
-        this.idCliente = idCliente; // Guardamos el idCliente en el estado
-      },
+    // Acción para seleccionar un cliente
+    seleccionarCliente(idCliente: number) {
+      this.idCliente = idCliente; // Guardamos el idCliente en el estado
+    },
 
     // Acción para realizar la venta
     async realizarVenta(idCliente: number) {
@@ -54,17 +54,19 @@ export const useCartStore = defineStore('cart', {
       try {
         // Obtener el monto total sumando los subtotales de cada producto
         const montoTotal = this.productos.reduce((total, producto) => {
-          return total + producto.precioVenta * producto.cantidad
+          const precioVenta = parseFloat(producto.precioVenta.toString()) // Asegurarse de que sea un número
+          const cantidad = parseInt(producto.cantidad.toString(), 10) // Asegurarse de que sea un número
+          return total + (precioVenta * cantidad) // Calculamos el subtotal por producto
         }, 0)
 
         // Crear el objeto de venta
         const ventaData = {
           idUsuario: authStore.userId, // Obtener idUsuario desde el store de auth
           idCliente: this.idCliente,   // Usamos el idCliente desde el estado
-          montoTotal,
+          montoTotal: parseFloat(montoTotal.toString()), // Asegurarse de que sea un número
           productos: this.productos.map(producto => ({
             idProducto: producto.id,
-            cantidad: producto.cantidad,
+            cantidad: parseInt(producto.cantidad.toString(), 10), // Asegurarse de que sea un número
           })),
         }
 
