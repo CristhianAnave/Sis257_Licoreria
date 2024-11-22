@@ -10,7 +10,7 @@
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld :msg="'SIS257' + (authStore.user ? ' - Hola ' + authStore.user : '')" />
+      <HelloWorld :msg="'SIS257' + (authStore.user ? ' - Hola ' + (authStore.user.nombre || 'Bienvenido') : '')" />
 
       <nav>
         <RouterLink to="/">Inicio</RouterLink>

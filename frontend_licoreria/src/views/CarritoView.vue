@@ -5,17 +5,20 @@
   import Button from 'primevue/button';
   import Dialog from 'primevue/dialog';
   import http from '@/plugins/axios';
-  import { useAuthStore } from '@/stores/index'
+  import { useAuthStore } from '@/stores/index';
+  import  QRCode  from 'qrcode';
+  import { QrcodeStream } from 'vue-qrcode-reader'; // Componente para escanear el QR
 
   export default {
     components: {
       InputText,
       Button,
       Dialog,
+      QRCode,
+      QrcodeStream, // Componente para escanear el QR
     },
     setup() {
       const cartStore = useCartStore();
-
       const mostrarFormularioCliente = ref(false);
 
       // Estado para almacenar los detalles del cliente seleccionado
@@ -33,6 +36,10 @@
       const clientes = ref<any[]>([]);
       const searchCI = ref(''); // Para el select de C.I.
 
+      // Datos para el QR
+      const qrData = ref<string | null>(null); 
+      const ventaRegistrada = ref(false); // Indica si la venta fue registrada
+
       // Cargar clientes del backend
       const obtenerClientes = async () => {
         try {
@@ -43,7 +50,6 @@
         }
       };
 
-      // Cargar clientes al montar el componente
       onMounted(() => {
         obtenerClientes();
       });
@@ -57,9 +63,6 @@
           alert('Cliente no encontrado');
         }
       }
-
-
-
 
       // Función para calcular el total del carrito
       const totalCarrito = computed(() => {
@@ -95,8 +98,7 @@
           producto.cantidad--;
         }
       }
-
-
+//Duncion registrar venta dfunciona
       function registrarVenta() {
         if (!clienteSeleccionado.value.id) {
           alert('Debe seleccionar un cliente para completar la venta.');
@@ -171,6 +173,146 @@
             }
           });
       }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // Función para generar el QR
+      function generarQR() {
+        if (!clienteSeleccionado.value.id || cartStore.productos.length === 0) {
+          alert('Debe seleccionar un cliente y agregar productos al carrito para generar el QR');
+          return;
+        }
+
+        const ventaData = {
+          idUsuario: useAuthStore().userId,
+          idCliente: clienteSeleccionado.value.id,
+          montoTotal: totalCarrito.value,
+        };
+
+        // Convertir la información de la venta a un string JSON
+        const qrString = JSON.stringify(ventaData);
+        
+        console.log('Generando QR con el siguiente dato:', qrString);
+        // Usar la librería QRCode para generar el QR
+        QRCode.toDataURL(qrString, (err: Error | null, url: string) => {
+          if (err) {
+            console.error('Error al generar el QR:', err);
+            alert('Hubo un error al generar el QR.');
+          } else {
+            qrData.value = url;
+            console.log('QR generado:', url);
+          }
+        });
+      }
+
+      // Función para registrar la venta con los datos escaneados del QR
+      function registrarVentaQr(data: any) {
+  if (!data.idCliente || !data.idUsuario || !data.montoTotal) {
+    alert('Datos del QR no válidos');
+    return;
+  }
+
+  const authStore = useAuthStore();
+  const token = authStore.token;
+  const userId = authStore.userId;
+
+  if (!userId) {
+    console.error('El ID del usuario no está disponible.');
+    return;
+  }
+
+  if (!token) {
+    alert('Debe iniciar sesión para completar la venta.');
+    return;
+  }
+
+  const ventaData = {
+    idUsuario: data.idUsuario,
+    idCliente: data.idCliente,
+    montoTotal: data.montoTotal,
+  };
+
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${useAuthStore().token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  http.post('/ventas', ventaData, config)
+    .then(response => {
+      const idVenta = response.data.id;
+
+      const detalleVentaData = cartStore.productos.map(producto => ({
+        idProducto: producto.id,
+        precioVenta: +producto.precioVenta,
+        cantidad: producto.cantidad,
+        subtotal: producto.cantidad * producto.precioVenta,
+        idVenta: Number(idVenta),
+      }));
+
+      // Verificar que los datos del carrito sean válidos
+      if (detalleVentaData.some(detalle => !detalle.idProducto || detalle.cantidad <= 0 || detalle.precioVenta <= 0)) {
+        console.error('Datos inválidos en detalleVentaData', detalleVentaData);
+        alert('Los datos de los productos en el carrito no son válidos.');
+        return;
+      }
+
+      // Registrar los detalles de la venta en el backend
+      return http.post('/detalleventa', detalleVentaData, config);
+    })
+    .then(() => {
+      cartStore.vaciarCarrito();
+      alert('Venta registrada con éxito');
+      ventaRegistrada.value = true; // Marcamos que la venta fue registrada
+      qrData.value = null;  // Eliminar el QR de la vista
+    })
+    .catch(error => {
+      if (error.response) {
+        console.error('Error de backend:', error.response.data);
+        alert(`Error del servidor: ${error.response.data.message || 'Intente nuevamente.'}`);
+      } else {
+        console.error('Error desconocido:', error);
+        alert('Hubo un error al conectar con el servidor. Intente nuevamente.');
+      }
+    });
+}
       // Función para formatear la moneda
       function formatCurrency(value: number): string {
         return value.toLocaleString('es-BO', {
@@ -200,6 +342,16 @@
         }
       }
 
+      // Función para manejar el escaneo del QR
+      function onDecode(decodedString: string) {
+        try {
+          const data = JSON.parse(decodedString);
+          registrarVentaQr(data);  // Registrar la venta con los datos escaneados
+        } catch (e) {
+          console.error('Error al procesar el QR:', e);
+        }
+      }
+
       return {
         cartStore,
         totalCarrito,
@@ -217,6 +369,10 @@
         searchCI,
         seleccionarClientePorCI,
         aceptarCliente,
+        qrData,      // Datos para el QR
+        ventaRegistrada,  // Estado de si la venta fue registrada
+        generarQR,  // Función para generar el QR
+        onDecode,   // Función para manejar el escaneo del QR
       };
     },
   };
@@ -225,11 +381,11 @@
 <template>
   <div class="carrito-view">
     <h1>Carrito de Compras</h1>
-
+         
     <div v-if="cartStore.productos.length === 0" class="empty-cart">
       <p>Tu carrito está vacío. ¡Agrega algunos productos!</p>
     </div>
-
+   
     <div v-else>
       <table class="cart-table">
         <thead>
@@ -274,6 +430,11 @@
       <div class="botones-acciones">
         <button @click="vaciarCarrito">Vaciar carrito</button>
         <button @click="registrarVenta" class="registrar-venta">Registrar venta</button>
+        <button @click="generarQR" class="generar-qr">Generar QR</button>
+      </div>
+
+      <div v-if="qrData">
+        <img :src="qrData" alt="QR Code" />
       </div>
     </div>
 
@@ -462,8 +623,6 @@
     background-color: #c82333;
   }
 
-
-
   .cerrar-formulario {
     background-color: #28a745;
     color: white;
@@ -477,5 +636,21 @@
 
   .cerrar-formulario:hover {
     background-color: #218838;
+  }
+
+  /* Estilo para el botón Generar QR */
+  .generar-qr {
+    background-color: #ff9800; /* Color naranja */
+    color: white;
+    border: 1px solid #ff9800;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 5px;
+  }
+
+  .generar-qr:hover {
+    background-color: #fb8c00; /* Naranja más oscuro */
+    border: 1px solid #fb8c00;
   }
 </style>

@@ -19,6 +19,7 @@ export const useCartStore = defineStore('cart', {
       } else {
         this.productos.push({ ...producto, cantidad: 1 })
       }
+      console.log('Productos en el carrito:', this.productos);
     },
 
     // Acción para eliminar un producto del carrito
