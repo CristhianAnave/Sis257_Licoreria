@@ -28,8 +28,9 @@
 </script>
 <template>
   <div class="m-8">
-    <h1>Productos</h1>
-    <Button label="Crear Nuevo" icon="pi pi-plus" @click="handleCreate" />
+    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color: #333;">Productos</h1>
+    <Button label="Crear Nuevo" icon="pi pi-plus" @click="handleCreate" 
+    style="background-color: #00ff00; border-color: black;" />
     <ProductoList ref="productoListRef" @edit="handleEdit" />
      <ProductoSave
      :mostrar="mostrarDialog"
@@ -42,4 +43,6 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>

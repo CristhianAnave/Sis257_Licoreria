@@ -44,7 +44,11 @@ https://templatemo.com/tm-583-festava-live
 }
 
 body {
-  background-color: var(--white-color);
+  background-image: url('src/assets/images/fondo1.jpg'); /* Cambia por la ruta de tu imagen */
+  background-size: cover; /* Ajusta la imagen para cubrir todo el área */
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  background-attachment: fixed; /* Hace que la imagen quede fija al hacer scroll */
+  background-position: center; /* Centra la imagen */
   font-family: var(--body-font-family); 
 }
 
@@ -265,7 +269,7 @@ strong {
 .nav-tabs .nav-link:focus, 
 .nav-tabs .nav-link:hover {
   background: var(--white-color);
-  box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+  box-shadow: 0 1rem 3rem rgba(238, 3, 3, 0.175);
   color: var(--primary-color);
 }
 
@@ -346,8 +350,8 @@ strong {
   SITE HEADER              
 -----------------------------------------*/
 .site-header {
-  background-color: var(--primary-color);
-  padding-top: 15px;
+  background-color: #3bc93b;
+  padding-top: 10px;
   padding-bottom: 15px;
 }
 
@@ -364,11 +368,11 @@ strong {
 }
 
 .sticky-wrapper.is-sticky .navbar {
-  background-color: var(--dark-color);
+  background-color: black;
 }
 
 .navbar {
-  background: transparent;
+  background: black;
   z-index: 9;
 }
 
@@ -387,17 +391,17 @@ strong {
 
 .navbar-nav .nav-link {
   display: inline-block;
-  color: var(--white-color);
-  font-size: var(--p-font-size);
-  font-weight: var(--font-weight-normal);
+  color: rgb(255, 255, 255);
+  font-size: normal;
+  font-weight: 2px;
   position: relative;
-  padding-top: 1px;
-  padding-bottom: 1px;
+  padding-top: 100%;
+  padding-bottom: 10px;
 }
 
 .navbar-nav .nav-link.active, 
 .navbar-nav .nav-link:hover {
-  color: var(--secondary-color);
+  color: #00ff00;
 }
 
 .navbar-toggler {
@@ -500,11 +504,11 @@ strong {
 
 
 /*---------------------------------------
-  ABOUT              
+  ABOUT  esto es para cambiar las primeras imagenes about festava 2022       
 -----------------------------------------*/
 .about-section {
-  background-image: url('../images/edward-unsplash-blur.jpg');
-  background-color: #57f11a;
+  background-image: url('../images/.jpg'); /*esto controla la imagen*/
+  background-color: #ff0000;     /*esto el fondo debajo de la imagen*/
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -519,7 +523,7 @@ strong {
   position: relative;
 }
 
-.about-text-icon {
+.about-text-icon { /* el icono de user pequeño*/
   background: var(--primary-color);
   border-radius: 100%;
   font-size: var(--h3-font-size);
@@ -529,7 +533,7 @@ strong {
   text-align: center;
 }
 
-.about-text-info {
+.about-text-info { /*Informacion del icono*/
   backdrop-filter: blur(5px) saturate(180%);
   -webkit-backdrop-filter: blur(5px) saturate(180%);
   background-color: rgba(255, 255, 255, 0.75);
@@ -581,7 +585,7 @@ strong {
 
 
 /*---------------------------------------
-  ARTISTS              
+  ARTISTS            artistasssss    
 -----------------------------------------*/
 .artists-thumb {
   position: relative;
@@ -746,9 +750,9 @@ strong {
 }
 
 .pricing-tag {
-  background-color: var(--secondary-color);
+  background-color: #00ff00;
   border-radius: var(--border-radius-large);
-  color: var(--white-color);
+  color: var(--dark-color);
   font-weight: var(--font-weight-bold);
   text-align: center;
   display: flex;

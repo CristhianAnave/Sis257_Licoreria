@@ -39,15 +39,15 @@ defineExpose({ obtenerLista})
 
 <template>
   <div>
-    <table>
+    <table class="table-products">
       <thead>
         <tr>
           <th>Nro</th>
-          <th>Codigo</th>
+          <th>Código</th>
           <th>Nombre</th>
-          <th>Categoria</th>
-          <th>Descripcion</th>
-          <th>TipoUnidad</th>
+          <th>Categoría</th>
+          <th>Descripción</th>
+          <th>Tipo Unidad</th>
           <th>Precio Compra</th>
           <th>Precio Venta</th>
           <th>Stock</th>
@@ -66,8 +66,8 @@ defineExpose({ obtenerLista})
           <td>{{ producto.precioVenta }}</td>
           <td>{{ producto.stock }}</td>
            <td>
-            <Button icon="pi pi-pencil" aria-label="Editar" text @click="emitirEdicion(producto)"/>
-            <Button icon="pi pi-trash" aria-label="Eliminar" text @click="mostrarEliminarConfirm(producto)" />
+            <Button icon="pi pi-pencil" aria-label="Editar" text @click="emitirEdicion(producto)" style="color: black"/>
+            <Button icon="pi pi-trash" aria-label="Eliminar" text @click="mostrarEliminarConfirm(producto)" style="color: black;"/>
            </td>
         </tr>       
       </tbody>
@@ -75,20 +75,52 @@ defineExpose({ obtenerLista})
     <Dialog
       v-model:visible="mostrarConfirmDialog"
       header="Confirmar Eliminación"
-      :style="{ width: '25rem' }"
+      :style="{ width: '25rem', backgroundColor: 'black'  }"
     >
-      <p>¿Estás seguro de que deseas eliminar este registro?</p>
+      <p style="color: white;">¿Estás seguro de que deseas eliminar este registro?</p>
       <div class="flex justify-end gap-2">
         <Button
           type="button"
           label="Cancelar"
           severity="secondary"
-          @click="mostrarConfirmDialog = false"
+          @click="mostrarConfirmDialog = false "
+          style="background-color: #ff0000; border-color: black; color: white;" 
         />
-        <Button type="button" label="Eliminar" @click="eliminar" />
+        <Button type="button" label="Eliminar" @click="eliminar" style="background-color: #00ff00; border-color: black;"/>
       </div>
     </Dialog>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Estilo para la tabla */
+.table-products {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0; /* Espacio fuera de la tabla */
+}
+
+/* Estilo para las celdas de la tabla */
+.table-products th,
+.table-products td {
+  padding: 12px 15px; /* Aumenta el espacio entre las celdas */
+  border: 1px solid black; /* Añade un borde suave a las celdas */
+  text-align: left; /* Alinea el texto a la izquierda */
+}
+
+/* Espaciado entre las columnas */
+.table-products th {
+  background-color: #67eb67; /* Fondo gris claro para el encabezado */
+  font-weight: bold; /* Negrita en los encabezados */
+}
+
+/* Estilo para las filas */
+.table-products tr:nth-child(even) {
+  background-color: #ccc; /* Fondo alterno para las filas pares */
+}
+.table-products tr:hover {
+  background-color: #77e21f; /* Fondo cuando se pasa el ratón sobre la fila */
+}
+
+
+</style>

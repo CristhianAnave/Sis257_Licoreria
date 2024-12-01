@@ -59,7 +59,7 @@
       </div>
 
       <div class="video-wrap">
-        <video autoplay loop muted class="custom-video" poster="">
+        <video autoplay loop class="custom-video" poster="">
           <source src="@/assets/video/Video Publicitario de Licores - jaime sanchez coelho (720p, h264, youtube).mp4"
             type="video/mp4">
 

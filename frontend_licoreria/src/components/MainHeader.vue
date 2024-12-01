@@ -45,22 +45,28 @@
               <RouterLink to="/" class="nav-link click-scroll">Inicio</RouterLink>
             </li>
             <slot v-if="authStore.token">
-            <li class="nav-item">
-              <RouterLink to="/usuarios" class="nav-link click-scroll">Usuarios</RouterLink>
-            </li>
 
-              
-              <li class="nav-item">
-              <RouterLink to="/empleados" class="nav-link click-scroll">Empleados</RouterLink>
-            </li>
+<!-- Menú desplegable para Personal -->
+<li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProducto" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Personal
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownProducto">
+                  <li><RouterLink to="/usuarios" class="dropdown-item">Usuarios</RouterLink></li>
+                  <li><RouterLink to="/empleados" class="dropdown-item">Empleados</RouterLink></li>
+                </ul>
+              </li>
 
-            <li class="nav-item">
-              <RouterLink to="/categoria" class="nav-link click-scroll">Categoría</RouterLink>
-            </li>
-
-            <li class="nav-item">
-              <RouterLink to="/productos" class="nav-link click-scroll">Productos</RouterLink>
-            </li>
+              <!-- Menú desplegable para Inventario -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownVentas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Inventario
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownVentas">
+                  <li><RouterLink to="/categoria" class="dropdown-item">Categorías</RouterLink></li>
+                  <li><RouterLink to="/productos" class="dropdown-item">Productos</RouterLink></li>
+                </ul>
+              </li>
 
             <li class="nav-item">
               <RouterLink to="/proveedores" class="nav-link click-scroll">Proveedores</RouterLink>
@@ -70,21 +76,21 @@
               <RouterLink to="/clientes" class="nav-link click-scroll">Clientes</RouterLink>
             </li>
 
-            <li class="nav-item">
-              <RouterLink to="/productos" class="nav-link click-scroll">Productos</RouterLink>
-            </li>
-
+            <!--
             <li class="nav-item">
               <RouterLink to="/productosVenta" class="nav-link click-scroll">Productos Disponibles</RouterLink>
             </li>
-
-
             <li class="nav-item">
               <RouterLink to="/carrito" class="nav-link click-scroll">Carrito de Ventas</RouterLink>
             </li>
+            --> 
             
             <li class="nav-item">
               <RouterLink to="/historial" class="nav-link click-scroll">Historial de Ventas</RouterLink>
+            </li>
+
+            <li class="nav-item">
+              <RouterLink to="/prueva" class="nav-link click-scroll">Compras</RouterLink>
             </li>
           </slot>
           </ul>
@@ -100,4 +106,10 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Personalización de los menús desplegables */
+.navbar-nav .nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+</style>

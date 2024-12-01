@@ -20,7 +20,12 @@ const props = defineProps({
 const emit = defineEmits(['guardar', 'close'])
 
 const categorias = ref<Categoria[]>([]) // para que aparezcas categorias en el groubox
-
+const tipoUnidad = ref([
+{ label: 'Caja', value: 'caja' },
+  { label: 'Paquete', value: 'paquete' },
+  { label: 'Docena', value: 'docena' },
+  { label: 'Unidad', value: 'unidad' }
+])
 const dialogVisible = computed({
   get: () => props.mostrar,
   set: value => {
@@ -104,26 +109,27 @@ onMounted(() => {
   <div class="card flex justify-center">
     <Dialog
       v-model:visible="dialogVisible"
-      :header="props.modoEdicion ? 'Editar' : 'Crear'"
+      :header="props.modoEdicion ? 'Editar Producto' : 'Crear   Producto'"
+      :style="{ backgroundColor: 'black', color: 'white' }"
       style="width: 25rem"
     >
-    <div class="flex items-center gap-4 mb-4">
-        <label for="categoria" class="font-semibold w-4">Categoria</label>
+    <div class="flex items-center gap-4 mb-4" >
+        <label for="categoria" class="font-semibold w-4">Categoría</label>
         <Select
           id="categoria"
           v-model="producto.categoria"
           :options="categorias"
           option-label="nombre"
-          class="flex-auto"
+          class="flex-auto "
           autocomplete="off"
         />
       </div>
       <div class="flex items-center gap-4 mb-4">
-        <label for="codigo" class="font-semibold w-4">Codigo</label>
+        <label for="codigo" class="font-semibold w-4">Código</label>
         <InputText
           id="codigo"
           v-model="producto.codigo"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
@@ -133,49 +139,50 @@ onMounted(() => {
         <InputText
           id="nombre"
           v-model="producto.nombre"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
       </div>
       <div class="flex items-center gap-4 mb-4">
-        <label for="descripcion" class="font-semibold w-4">Descripcion</label>
+        <label for="descripcion" class="font-semibold w-4">Descripción</label>
         <InputText
           id="descripcion"
           v-model="producto.descripcion"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
       </div>
       <div class="flex items-center gap-4 mb-4">
-        <label for="tipoUnidad" class="font-semibold w-4">Tipo de Unidad</label>
-        <InputText
+        <label for="tipoUnidad" class="font-semibold w-4">Tipo De Unidad</label>
+        <Select
           id="tipoUnidad"
           v-model="producto.tipoUnidad"
-          class="flex-auto"
+          :options="tipoUnidad"
+          option-label="label"
+          class="flex-auto custom-input"
           autocomplete="off"
-          autofocus
         />
       </div>
       <div class="flex items-center gap-4 mb-4">
-        <label for="precioCompra" class="font-semibold w-4">PrecioCompra</label>
+        <label for="precioCompra" class="font-semibold w-4">Precio De Compra</label>
         <InputText
           id="precioCompra"
           v-model ="precioCompraString"
           type="number"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
       </div>
       <div class="flex items-center gap-4 mb-4">
-        <label for="precioVenta" class="font-semibold w-4">precioVenta</label>
+        <label for="precioVenta" class="font-semibold w-4">Precio De Venta</label>
         <InputText
           id="precioVenta" 
           v-model="precioVentaString"
           type="number"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
@@ -186,7 +193,7 @@ onMounted(() => {
           id="stock"
           v-model="stockString"
           type="number"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
@@ -198,16 +205,33 @@ onMounted(() => {
           icon="pi pi-times"
           severity="secondary"
           @click="dialogVisible = false"
+          style="background-color: #ff0000; border-color: black; color: white;" 
         ></Button>
         <Button
           type="button"
           label="Guardar"
           icon="pi pi-save"
           @click="handleSave"
+          style="background-color: #00ff00; border-color: black; color: black;" 
         ></Button>
       </div>
     </Dialog>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+
+/* Estilo para los inputs (campos de formulario) */
+.custom-input {
+  background-color: rgb(0, 0, 0) !important; /* Fondo amarillo para los campos */
+  border: 1px solid #ccc; /* Borde gris para los campos */
+  color: rgb(255, 252, 252);  /* Color del texto en los inputs */
+  padding: 0.5rem;
+}
+
+.custom-input:focus {
+  border-color: #b3ff00;  /* Color de borde azul cuando el campo está en foco */
+  outline: none;  /* Quitar el borde de enfoque predeterminado */
+}
+</style>
