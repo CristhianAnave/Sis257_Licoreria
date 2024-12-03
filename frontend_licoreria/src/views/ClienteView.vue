@@ -28,8 +28,9 @@ function handleGuardar(){
 </script>
 <template>
   <div class="m-8">
-    <h1>Clientes</h1> 
-    <Button label="Crear Nuevo" icon="pi pi-plus" @click="handleCreate" />
+    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color:white">Clientes</h1> 
+    <Button label="Crear Nuevo" icon="pi pi-plus" @click="handleCreate" 
+    style="background-color: #00ff00; border-color: black;"/>
     <ClienteList ref="clienteListRef" @edit="handleEdit"/>
     <ClienteSave
      :mostrar="mostrarDialog"

@@ -71,7 +71,8 @@ async function handleSave() {
   <div class="card flex justify-center">
     <Dialog
       v-model:visible="dialogVisible"
-      :header="props.modoEdicion ? 'Editar' : 'Crear'"
+      :header="props.modoEdicion ? 'Editar Usuario' : 'Crear Usuario'"
+      :style="{ backgroundColor: '#35b847', color: 'black' }"
       style="width: 25rem"
     >
       <div class="flex items-center gap-4 mb-4">
@@ -79,7 +80,7 @@ async function handleSave() {
         <InputText
           id="usuario"
           v-model="usuario.usuario"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
@@ -89,7 +90,7 @@ async function handleSave() {
         <InputText         
           id="clave"
           v-model="usuario.clave"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
           :value="'hola123'"
@@ -101,7 +102,7 @@ async function handleSave() {
         <InputText
           id="rol"
           v-model="usuario.rol"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
           autofocus
         />
@@ -113,7 +114,7 @@ async function handleSave() {
           v-model="usuario.premium"
           type="radio"
           value="true"
-          class="flex-auto"
+          class="flex-auto custom-input"
           autocomplete="off"
         />
         <label for="premium-yes">Sí</label>
@@ -134,16 +135,33 @@ async function handleSave() {
           icon="pi pi-times"
           severity="secondary"
           @click="dialogVisible = false"
+          style="background-color: #ff0000; border-color: black; color: white;" 
         ></Button>
         <Button
           type="button"
           label="Guardar"
           icon="pi pi-save"
           @click="handleSave"
+          style="background-color: #00ff00; border-color: black; color: black;" 
         ></Button>
       </div>
     </Dialog>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Estilo para los inputs (campos de formulario) */
+.custom-input {
+  background-color: rgb(0, 0, 0) !important; /* Fondo amarillo para los campos */
+  border: 1px solid #ccc; /* Borde gris para los campos */
+  color: rgb(255, 252, 252);  /* Color del texto en los inputs */
+  padding: 0.5rem;
+}
+
+.custom-input:focus {
+  border-color: #b3ff00;  /* Color de borde azul cuando el campo está en foco */
+  outline: none;  /* Quitar el borde de enfoque predeterminado */
+}
+
+
+</style>

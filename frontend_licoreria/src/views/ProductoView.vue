@@ -28,7 +28,7 @@
 </script>
 <template>
   <div class="m-8">
-    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color: #333;">Productos</h1>
+    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color:white">Productos</h1>
     <Button label="Crear Nuevo" icon="pi pi-plus" @click="handleCreate" 
     style="background-color: #00ff00; border-color: black;" />
     <ProductoList ref="productoListRef" @edit="handleEdit" />

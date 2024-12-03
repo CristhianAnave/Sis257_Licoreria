@@ -46,7 +46,7 @@
     Usted no tiene autorización para ver esta tabla.
   </div>
   <div v-else>
-    <table>
+    <table class="table-usuario">
       <thead>
         <tr>
           <th>Nro</th>
@@ -63,22 +63,55 @@
           <td>{{ usuario.rol }}</td>
           <td>{{ usuario.premium }}</td>
           <td>
-            <Button v-if="isAdmin" icon="pi pi-pencil" aria-label="Editar" text @click="emitirEdicion(usuario)" />
+            <Button v-if="isAdmin" icon="pi pi-pencil" aria-label="Editar" text @click="emitirEdicion(usuario)" style="color: black"/>
             <!--para editar 1) @click="etc-->
             <Button v-if="isAdmin" icon="pi pi-trash" aria-label="Eliminar" text
-              @click="mostrarEliminarConfirm(usuario)" />
+              @click="mostrarEliminarConfirm(usuario)" style="color: black;"/>
           </td>
         </tr>
       </tbody>
     </table>
-    <Dialog v-model:visible="mostrarConfirmDialog" header="Confirmar Eliminación" :style="{ width: '25rem' }">
-      <p>¿Estás seguro de que deseas eliminar este registro?</p>
+    <Dialog v-model:visible="mostrarConfirmDialog" header="Confirmar Eliminación" :style="{color:'black', width: '25rem', backgroundColor: '#35b847'  }">
+      
+      <p style="color: black;">¿Estás seguro de que deseas eliminar este registro?</p>
       <div class="flex justify-end gap-2">
-        <Button type="button" label="Cancelar" severity="secondary" @click="mostrarConfirmDialog = false" />
-        <Button type="button" label="Eliminar" @click="eliminar" />
+        <Button type="button" label="Cancelar" severity="secondary" @click="mostrarConfirmDialog = false"
+        style="background-color: #ff0000; border-color: black; color: white;" 
+        />
+        <Button type="button" label="Eliminar" @click="eliminar" style="background-color: #00ff00; border-color: black;"/>
       </div>
     </Dialog>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Estilo para la tabla */
+.table-usuario {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0; /* Espacio fuera de la tabla */
+}
+
+/* Estilo para las celdas de la tabla */
+.table-usuario th,
+.table-usuario td {
+  padding: 12px 15px; /* Aumenta el espacio entre las celdas */
+  border: 1px solid rgb(0, 0, 0); /* Añade un borde suave a las celdas */
+  text-align: left; /* Alinea el texto a la izquierda */
+}
+
+/* Espaciado entre las columnas */
+.table-usuario th {
+  background-color: #67eb67; /* Fondo gris claro para el encabezado */
+  font-weight: bold; /* Negrita en los encabezados */
+}
+
+/* Estilo para las filas */
+.table-usuario tr {
+  background-color: #d3d1dbb7; /* Fondo alterno para las filas pares */
+}
+.table-usuario tr:hover {
+  background-color: #77e21f; /* Fondo cuando se pasa el ratón sobre la fila */
+}
+
+</style>

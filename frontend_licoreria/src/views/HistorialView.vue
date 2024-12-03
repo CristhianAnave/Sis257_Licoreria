@@ -1,5 +1,5 @@
 <script lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import http from '@/plugins/axios';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
@@ -36,6 +36,7 @@ export default {
         const response = await http.get(`/ventas/${ventaId}`);
         console.log(response.data); // Aquí es donde agregas el console.log
         ventaSeleccionada.value = response.data;
+        console.log(ventaSeleccionada.value);
         mostrarDetalles.value = true;
       } catch (error) {
         console.error('Error al obtener los detalles de la venta:', error);
@@ -55,6 +56,16 @@ export default {
     const ocultarVentas = () => {
       mostrarVentas.value = false;
     };
+ 
+    // Calcular el Monto Total de la venta seleccionada
+    const calcularMontoTotal = computed(() => {
+      if (ventaSeleccionada.value && ventaSeleccionada.value.detalleventas) {
+        return ventaSeleccionada.value.detalleventas.reduce((total: number, detalle: any) => {
+          return total + parseFloat(detalle.subtotal);
+        }, 0).toFixed(2); // Redondear a dos decimales
+      }
+      return '0.00'; // Si no hay detalle, mostrar 0
+    });
 
     return {
       ventas,
@@ -66,7 +77,8 @@ export default {
       mostrarTodasLasVentas,
       ocultarVentas,
       noVentas,
-      formatDate
+      formatDate,
+      calcularMontoTotal
     };
   }
 };
@@ -74,7 +86,7 @@ export default {
 
 <template>
   <div class="m-8">
-    <h1>Historial de Ventas</h1>
+    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color:white">Historial de Ventas</h1>
 
     <!-- Botones Mostrar Todo y Ocultar -->
     <div class="botones">
@@ -128,18 +140,29 @@ export default {
         <table class="detalle-table">
           <thead>
             <tr>
+              <th>Nro</th>
               <th>Producto</th>
+              <th>Descripción</th>
+              <th>Categoría</th>
               <th>Cantidad</th>
-              <th>Precio</th>
+              <th>Precio Venta</th>
               <th>Subtotal</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(detalle, index) in ventaSeleccionada.detalles" :key="index">
+            <tr v-for="(detalle, index) in ventaSeleccionada.detalleventas" :key="index">
+              <td>{{ index + 1 }}</td>
               <td>{{ detalle.producto.nombre }}</td>
+              <td>{{ detalle.producto.descripcion }}</td>
+              <td>{{ detalle.producto.categoria.nombre }}</td>
               <td>{{ detalle.cantidad }}</td>
               <td>{{ detalle.precioVenta }}</td>
               <td>{{ detalle.subtotal }}</td>
+            </tr>
+
+            <tr>
+              <td colspan="6" style="text-align: right; font-weight: bold;">Monto Total</td>
+              <td>{{ calcularMontoTotal }}</td>
             </tr>
           </tbody>
         </table>
@@ -153,6 +176,7 @@ export default {
     </Dialog>
   </div>
 </template>
+
 <style scoped>
 .historial-view {
   max-width: 900px;
@@ -169,50 +193,55 @@ export default {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  table-layout: auto; /* Ajusta el ancho de las celdas según el contenido */
 }
 
 .ventas-table th, .ventas-table td {
-  padding: 12px 15px;
+  padding: 8px 12px; /* Reduce el padding para ajustarse al contenido */
   text-align: left;
-  border: 1px solid #ddd;
+  border: 1px solid #000000;
 }
 
 .ventas-table th {
-  background-color: #1f141400;
+  background-color: #67eb67;
+  font-weight: bold;
+}
+
+.ventas-table tr {
+  background-color: #d3d1dbb7;
+}
+
+.ventas-table tr:hover {
+  background-color: #77e21f;
 }
 
 .detalle-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto; /* Ajusta el ancho de las celdas según el contenido */
 }
 
 .detalle-table th, .detalle-table td {
-  padding: 10px 12px;
+  padding: 8px 12px; /* Ajuste de padding para detalle de la venta */
   border: 1px solid #ddd;
 }
 
 button {
-  background-color: #28a745;
-  color: rgb(255, 255, 255);
+  background-color: #0dc544;
+  color: rgb(7, 7, 7);
   border: none;
   padding: 8px 16px;
   cursor: pointer;
+  transition: none;
 }
 
-button:hover {
-  background-color: #0056b3;
+.mostrar-todo-btn, .ocultar-btn, .cerrar-detalles-btn {
+  transition: none;
 }
 
 .cerrar-detalles-btn {
-  background-color: #dc3545;
+  background-color: #f80019;
   color: rgb(253, 253, 253);
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-}
-
-.cerrar-detalles-btn:hover {
-  background-color: #c82333;
 }
 
 .botones {
@@ -227,10 +256,12 @@ button:hover {
 .mostrar-todo-btn {
   background-color: #007bff;
   color: white;
+  transition: none;
 }
 
 .ocultar-btn {
-  background-color: #dc3545;
+  background-color: #f80019;
   color: white;
+  transition: none;
 }
 </style>

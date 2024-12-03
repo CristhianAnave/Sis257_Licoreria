@@ -41,7 +41,13 @@ export class VentasService {
   async findOne(id: number): Promise<Venta> {
     const venta = await this.ventasRepository.findOne({
       where: { id },
-      relations: ['usuarios', 'cliente'],
+      relations: [
+        'usuarios',
+        'cliente',
+        'detalleventas',
+        'detalleventas.producto',
+        'detalleventas.producto.categoria',
+      ],
     });
     if (!venta) {
       throw new NotFoundException(`La venta ${id} no existe`);

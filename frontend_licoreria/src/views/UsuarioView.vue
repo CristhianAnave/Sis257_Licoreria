@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import UsuarioList from '@/components/usuario/UsuarioList.vue'
   import UsuarioSave from '@/components/usuario/UsuarioSave.vue'
-import { useAuthStore } from '@/stores';
+  import { useAuthStore } from '@/stores';
   import Button from 'primevue/button'
   import { computed, ref } from 'vue'
 
@@ -9,9 +9,9 @@ import { useAuthStore } from '@/stores';
   const mostrarDialog = ref<boolean>(false)
   const usuarioListRef = ref<typeof UsuarioList | null>(null)
   const usuarioEdit = ref<any>(null)
-  
-// Obtenemos el estado del usuario autenticado
-const authStore = useAuthStore()
+
+  // Obtenemos el estado del usuario autenticado
+  const authStore = useAuthStore()
   const isAdmin = computed(() => authStore.role === 'Admin')  // Verificamos si el usuario tiene rol de Admin
 
   function handleCreate() {
@@ -35,14 +35,12 @@ const authStore = useAuthStore()
 
 <template>
   <div class="m-8 ">
-    <h1>Usuarios</h1>
-    <Button v-if="isAdmin" label="Crear Nuevo" icon="pi pi plus" @click="handleCreate" />
-
-
-
+    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color:white">Usuarios</h1>
+    <Button v-if="isAdmin" label="Crear Nuevo" icon="pi pi plus" @click="handleCreate"
+      style="background-color: #00ff00; border-color: black;" />
     <UsuarioList ref="usuarioListRef" @edit="handleEdit" />
-    <UsuarioSave :mostrar="mostrarDialog" :usuario="usuarioEdit" :modoEdicion="!!usuarioEdit"
-      @guardar="handleGuardar" @close="handleCloseDialog" />
+    <UsuarioSave :mostrar="mostrarDialog" :usuario="usuarioEdit" :modoEdicion="!!usuarioEdit" @guardar="handleGuardar"
+      @close="handleCloseDialog" />
     <!--Fin-->
   </div>
 </template>

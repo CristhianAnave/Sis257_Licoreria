@@ -75,9 +75,9 @@ defineExpose({ obtenerLista})
     <Dialog
       v-model:visible="mostrarConfirmDialog"
       header="Confirmar Eliminación"
-      :style="{ width: '25rem', backgroundColor: 'black'  }"
+      :style="{ color:'black', width: '25rem', backgroundColor: '#35b847'  }"
     >
-      <p style="color: white;">¿Estás seguro de que deseas eliminar este registro?</p>
+      <p style="color: black;">¿Estás seguro de que deseas eliminar este registro?</p>
       <div class="flex justify-end gap-2">
         <Button
           type="button"
@@ -104,7 +104,7 @@ defineExpose({ obtenerLista})
 .table-products th,
 .table-products td {
   padding: 12px 15px; /* Aumenta el espacio entre las celdas */
-  border: 1px solid black; /* Añade un borde suave a las celdas */
+  border: 1px solid rgb(0, 0, 0); /* Añade un borde suave a las celdas */
   text-align: left; /* Alinea el texto a la izquierda */
 }
 
@@ -115,8 +115,8 @@ defineExpose({ obtenerLista})
 }
 
 /* Estilo para las filas */
-.table-products tr:nth-child(even) {
-  background-color: #ccc; /* Fondo alterno para las filas pares */
+.table-products tr {
+  background-color: #d3d1dbb7; /* Fondo alterno para las filas pares */
 }
 .table-products tr:hover {
   background-color: #77e21f; /* Fondo cuando se pasa el ratón sobre la fila */

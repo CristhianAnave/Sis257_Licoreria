@@ -39,7 +39,7 @@ defineExpose({ obtenerLista })
 
 <template>
   <div>
-    <table>
+    <table class="table-categorium">
       <thead>
         <tr>
           <th>Nro</th>
@@ -52,8 +52,8 @@ defineExpose({ obtenerLista })
           <td>{{ index + 1 }}</td>
           <td>{{ categoria.nombre }}</td>
           <td>
-            <Button icon="pi pi-pencil" aria-label="Editar" text @click="emitirEdicion(categoria)" />  <!--para editar 1) @click="etc-->
-            <Button icon="pi pi-trash" aria-label="Eliminar" text @click="mostrarEliminarConfirm(categoria)" />
+            <Button icon="pi pi-pencil" aria-label="Editar" text @click="emitirEdicion(categoria)" style="color: black"/>  <!--para editar 1) @click="etc-->
+            <Button icon="pi pi-trash" aria-label="Eliminar" text @click="mostrarEliminarConfirm(categoria)" style="color: black;"/>
           </td>
         </tr>
       </tbody>
@@ -61,20 +61,52 @@ defineExpose({ obtenerLista })
     <Dialog
       v-model:visible="mostrarConfirmDialog"
       header="Confirmar Eliminación"
-      :style="{ width: '25rem' }"
+      :style="{color:'black', width: '25rem' , backgroundColor: '#35b847' }"
     >
-      <p>¿Estás seguro de que deseas eliminar este registro?</p>
+      <p style="color: black;">¿Estás seguro de que deseas eliminar este registro?</p>
       <div class="flex justify-end gap-2">
         <Button
           type="button"
           label="Cancelar"
           severity="secondary"
           @click="mostrarConfirmDialog = false"
+          style="background-color: #ff0000; border-color: black; color: white;" 
         />
-        <Button type="button" label="Eliminar" @click="eliminar" />
+        <Button type="button" label="Eliminar" @click="eliminar" style="background-color: #00ff00; border-color: black;"/>
       </div>
     </Dialog>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Estilo para la tabla */
+.table-products {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0; /* Espacio fuera de la tabla */
+}
+
+/* Estilo para las celdas de la tabla */
+.table-categorium th,
+.table-categorium td {
+  padding: 12px 15px; /* Aumenta el espacio entre las celdas */
+  border: 1px solid rgb(0, 0, 0); /* Añade un borde suave a las celdas */
+  text-align: left; /* Alinea el texto a la izquierda */
+}
+
+/* Espaciado entre las columnas */
+.table-categorium th {
+  background-color: #67eb67; /* Fondo gris claro para el encabezado */
+  font-weight: bold; /* Negrita en los encabezados */
+}
+
+/* Estilo para las filas */
+.table-categorium tr {
+  background-color: #d3d1dbb7; /* Fondo alterno para las filas pares */
+}
+.table-categorium tr:hover {
+  background-color: #77e21f; /* Fondo cuando se pasa el ratón sobre la fila */
+}
+
+
+</style>

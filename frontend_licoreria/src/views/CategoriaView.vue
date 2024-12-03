@@ -30,8 +30,10 @@
 
 <template>
   <div class="m-8">
-    <h1>Categoría</h1>
-    <Button label="Crear Nuevo" icon="pi pi plus" @click="handleCreate" />
+    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color:white">Categorías</h1>
+    <Button label="Crear Nuevo" icon="pi pi plus" @click="handleCreate"
+    style="background-color: #00ff00; border-color: black;"
+    />
     <!-- boton que mostrara CREAR nuevo-->
     <!-- Todo esto para llamar a CategoriaSave-->
     <CategoriaList ref="categoriaListRef" @edit="handleEdit" />

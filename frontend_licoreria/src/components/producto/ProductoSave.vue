@@ -110,7 +110,7 @@ onMounted(() => {
     <Dialog
       v-model:visible="dialogVisible"
       :header="props.modoEdicion ? 'Editar Producto' : 'Crear   Producto'"
-      :style="{ backgroundColor: 'black', color: 'white' }"
+      :style="{ backgroundColor: '#35b847', color: 'black' }"
       style="width: 25rem"
     >
     <div class="flex items-center gap-4 mb-4" >
