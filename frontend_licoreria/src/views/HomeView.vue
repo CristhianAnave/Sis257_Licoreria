@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 
+// Estado para saber si el video está silenciado o no
+const isMuted = ref(true);  // Por defecto, el video está silenciado
+
+// Método para alternar el estado de silenciado
+function toggleMute() {
+  isMuted.value = !isMuted.value;
+}
 </script>
 
 <template>
@@ -59,12 +67,16 @@
       </div>
 
       <div class="video-wrap">
-        <video autoplay loop class="custom-video" poster="">
+        <video autoplay loop class="custom-video" poster="" :muted="isMuted">
           <source src="@/assets/video/Video Publicitario de Licores - jaime sanchez coelho (720p, h264, youtube).mp4"
             type="video/mp4">
 
           Your browser does not support the video tag.
         </video>
+        <!-- Botón para alternar el estado de silencio -->
+        <button @click="toggleMute" class="mute-btn">
+          {{ isMuted ? 'Activar sonido' : 'Silenciar' }}
+        </button>
       </div>
     </section>
 
@@ -75,39 +87,31 @@
 
           <div class="col-lg-6 col-12 mb-4 mb-lg-0 d-flex align-items-center">
             <div class="services-info">
-              <h2 class="text-white mb-4">About Festava 2022</h2>
+              <h2 class="text-white mb-4">Conócenos</h2>
 
-              <p class="text-white">Festava Live is free CSS template provided by TemplateMo website. This
-                layout is built on Bootstrap v5.2.2 CSS library. You are free to use this template for
-                your commercial website.</p>
+              <p class="text-white">En Licorería El Último Trago, nos enorgullece ofrecer una amplia selección de
+                bebidas alcohólicas de la más alta calidad, perfectas para cualquier ocasión. Ya sea que estés buscando
+                una botella de vino premium, un licor exótico, o la mejor cerveza artesanal, tenemos algo para todos los
+                gustos.
 
-              <h6 class="text-white mt-4">Once in Lifetime Experience</h6>
+                Nuestro compromiso es ofrecerte no solo productos excepcionales, sino también un servicio al cliente
+                personalizado que te haga sentir como en casa.
 
-              <p class="text-white">You are not allowed to redistribute the template ZIP file on any other
-                website without a permission.</p>
+                Ubicados en el corazón de la ciudad, nuestro equipo está siempre dispuesto a asesorarte en la elección
+                de tus bebidas favoritas, asegurando que cada compra sea una experiencia satisfactoria. </p>
+              <h6 class="text-white mt-4">Licoreria EL ÚLTIMO TRAGO</h6>
 
-              <h6 class="text-white mt-4">Whole Night Party</h6>
-
-              <p class="text-white">Please tell your friends about our website. Thank you.</p>
+              <p class="text-white">Es más que una simple licorería: somos un punto de encuentro para quienes disfrutan
+                del buen beber, con un ambiente amigable, confiable y lleno de buena energía. Te invitamos a visitarnos
+                y descubrir todo lo que tenemos para ofrecerte. ¡Nos encantará ser parte de tus celebraciones y momentos
+                especiales!</p>
             </div>
           </div>
 
           <div class="col-lg-6 col-12">
             <div class="about-text-wrap">
-              <img src="@/assets/images/pexels-alexander-suhorucov-6457579.jpg" class="about-image img-fluid">
-
-              <div class="about-text-info d-flex">
-                <div class="d-flex">
-                  <i class="about-text-icon bi-person"></i>
-                </div>
-
-
-                <div class="ms-4">
-                  <h3>a happy moment</h3>
-
-                  <p class="mb-0">your amazing festival experience with us</p>
-                </div>
-              </div>
+              <img src="@/assets/images/Imagen de WhatsApp 2024-11-30 a las 18.39.15_82a3ad41.jpg"
+                class="about-image img-fluid">
             </div>
           </div>
 
@@ -121,37 +125,22 @@
         <div class="row justify-content-center">
 
           <div class="col-12 text-center">
-            <h2 class="mb-4">Meet Artists</h2>
+            <h2
+              style="background-color: #00ff00; color: black; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;"
+              class="mb-4">
+              Trabajamos con los Mejores
+            </h2>
           </div>
 
           <div class="col-lg-5 col-12">
             <div class="artists-thumb">
               <div class="artists-image-wrap">
-                <img src="@/assets/images/artists/joecalih-UmTZqmMvQcw-unsplash.jpg" class="artists-image img-fluid">
+                <img src="@/assets/images/cocaaa.jpg" class="artists-image img-fluid">
               </div>
-
-              <div class="artists-hover">
-                <p>
-                  <strong>Name:</strong>
-                  Madona
-                </p>
-
-                <p>
-                  <strong>Birthdate:</strong>
-                  August 16, 1958
-                </p>
-
-                <p>
-                  <strong>Music:</strong>
-                  Pop, R&amp;B
-                </p>
-
-                <hr>
-
-                <p class="mb-0">
-                  <strong>Youtube Channel:</strong>
-                  <a href="#">Madona Official</a>
-                </p>
+            </div>
+            <div class="artists-thumb">
+              <div class="artists-image-wrap">
+                <img src="@/assets/images/paceñaa.jpg" class="artists-image img-fluid">
               </div>
             </div>
           </div>
@@ -159,261 +148,38 @@
           <div class="col-lg-5 col-12">
             <div class="artists-thumb">
               <div class="artists-image-wrap">
-                <img src="@/assets/images/artists/abstral-official-bdlMO9z5yco-unsplash.jpg" class="artists-image img-fluid">
-              </div>
-
-              <div class="artists-hover">
-                <p>
-                  <strong>Name:</strong>
-                  Rihana
-                </p>
-
-                <p>
-                  <strong>Birthdate:</strong>
-                  Feb 20, 1988
-                </p>
-
-                <p>
-                  <strong>Music:</strong>
-                  Country
-                </p>
-
-                <hr>
-
-                <p class="mb-0">
-                  <strong>Youtube Channel:</strong>
-                  <a href="#">Rihana Official</a>
-                </p>
+                <img src="@/assets/images/coronaa.jpg" class="artists-image img-fluid">
               </div>
             </div>
 
             <div class="artists-thumb">
-              <img src="@/assets/images/artists/soundtrap-rAT6FJ6wltE-unsplash.jpg" class="artists-image img-fluid">
-
-              <div class="artists-hover">
-                <p>
-                  <strong>Name:</strong>
-                  Bruno Bros
-                </p>
-
-                <p>
-                  <strong>Birthdate:</strong>
-                  October 8, 1985
-                </p>
-
-                <p>
-                  <strong>Music:</strong>
-                  Pop
-                </p>
-
-                <hr>
-
-                <p class="mb-0">
-                  <strong>Youtube Channel:</strong>
-                  <a href="#">Bruno Official</a>
-                </p>
-              </div>
+              <img src="@/assets/images/huari.jpg" class="artists-image img-fluid">
+            </div>
+            <div class="artists-thumb">
+              <img src="@/assets/images/kohlberg.jpg" class="artists-image img-fluid">
             </div>
           </div>
 
         </div>
       </div>
     </section>
-
-
-    <section class="schedule-section section-padding" id="section_4">
-      <div class="container">
-        <div class="row">
-
-          <div class="col-12 text-center">
-            <h2 class="text-white mb-4">Event Schedule</h2>
-
-            <div class="table-responsive">
-              <table class="schedule-table table table-dark">
-                <thead>
-                  <tr>
-                    <th scope="col">Date</th>
-
-                    <th scope="col">Wednesday</th>
-
-                    <th scope="col">Thursday</th>
-
-                    <th scope="col">Friday</th>
-
-                  </tr>
-                </thead>
-
-                <tbody>
-                  <tr>
-                    <th scope="row">Day 1</th>
-
-                    <td class="table-background-image-wrap pop-background-image">
-                      <h3>Pop Night</h3>
-
-                      <p class="mb-2">5:00 - 7:00 PM</p>
-
-                      <p>By Adele</p>
-
-                      <div class="section-overlay"></div>
-                    </td>
-
-                    <td style="background-color: #F3DCD4"></td>
-
-                    <td class="table-background-image-wrap rock-background-image">
-                      <h3>Rock & Roll</h3>
-
-                      <p class="mb-2">7:00 - 11:00 PM</p>
-
-                      <p>By Rihana</p>
-
-                      <div class="section-overlay"></div>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <th scope="row">Day 2</th>
-
-                    <td style="background-color: #ECC9C7"></td>
-
-                    <td>
-                      <h3>DJ Night</h3>
-
-                      <p class="mb-2">6:30 - 9:30 PM</p>
-
-                      <p>By Rihana</p>
-                    </td>
-
-                    <td style="background-color: #D9E3DA"></td>
-                  </tr>
-
-                  <tr>
-                    <th scope="row">Day 3</th>
-
-                    <td class="table-background-image-wrap country-background-image">
-                      <h3>Country Music</h3>
-
-                      <p class="mb-2">4:30 - 7:30 PM</p>
-
-                      <p>By Rihana</p>
-
-                      <div class="section-overlay"></div>
-                    </td>
-
-                    <td style="background-color: #D1CFC0"></td>
-
-                    <td>
-                      <h3>Free Styles</h3>
-
-                      <p class="mb-2">6:00 - 10:00 PM</p>
-
-                      <p>By Members</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-    <section class="pricing-section section-padding section-bg" id="section_5">
-      <div class="container">
-        <div class="row">
-
-          <div class="col-lg-8 col-12 mx-auto">
-            <h2 class="text-center mb-4">Plans, you' love</h2>
-          </div>
-
-          <div class="col-lg-6 col-12">
-            <div class="pricing-thumb">
-              <div class="d-flex">
-                <div>
-                  <h3><small>Early Bird</small> $120</h3>
-
-                  <p>Including good things:</p>
-                </div>
-
-                <p class="pricing-tag ms-auto">Save up to <span>50%</span></p>
-              </div>
-
-              <ul class="pricing-list mt-3">
-                <li class="pricing-list-item">platform for potential customers</li>
-
-                <li class="pricing-list-item">digital experience</li>
-
-                <li class="pricing-list-item">high-quality sound</li>
-
-                <li class="pricing-list-item">standard content</li>
-              </ul>
-
-              <a class="link-fx-1 color-contrast-higher mt-4" href="ticket.html">
-                <span>Buy Ticket</span>
-                <svg class="icon" viewBox="0 0 32 32" aria-hidden="true">
-                  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="16" cy="16" r="15.5"></circle>
-                    <line x1="10" y1="18" x2="16" y2="12"></line>
-                    <line x1="16" y1="12" x2="22" y2="18"></line>
-                  </g>
-                </svg>
-              </a>
-            </div>
-          </div>
-
-          <div class="col-lg-6 col-12 mt-4 mt-lg-0">
-            <div class="pricing-thumb">
-              <div class="d-flex">
-                <div>
-                  <h3><small>Standard</small> $240</h3>
-
-                  <p>What makes a premium festava?</p>
-                </div>
-              </div>
-
-              <ul class="pricing-list mt-3">
-                <li class="pricing-list-item">platform for potential customers</li>
-
-                <li class="pricing-list-item">digital experience</li>
-
-                <li class="pricing-list-item">high-quality sound</li>
-
-                <li class="pricing-list-item">premium content</li>
-
-                <li class="pricing-list-item">live chat support</li>
-              </ul>
-
-              <a class="link-fx-1 color-contrast-higher mt-4" href="ticket.html">
-                <span>Buy Ticket</span>
-                <svg class="icon" viewBox="0 0 32 32" aria-hidden="true">
-                  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="16" cy="16" r="15.5"></circle>
-                    <line x1="10" y1="18" x2="16" y2="12"></line>
-                    <line x1="16" y1="12" x2="22" y2="18"></line>
-                  </g>
-                </svg>
-              </a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-
     <section class="contact-section section-padding" id="section_6">
       <div class="container">
         <div class="row">
 
           <div class="col-lg-8 col-12 mx-auto">
-            <h2 class="text-center mb-4">Interested? Let's talk</h2>
+            <h2
+              style="background-color: #00ff00; color: black; padding: 15px 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); text-align: center;"
+              class="mb-4">
+              Te Interesa Trabajar Con Nosotros? Hablemos
+            </h2>
 
             <nav class="d-flex justify-content-center">
               <div class="nav nav-tabs align-items-baseline justify-content-center" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-ContactForm-tab" data-bs-toggle="tab"
                   data-bs-target="#nav-ContactForm" type="button" role="tab" aria-controls="nav-ContactForm"
                   aria-selected="false">
-                  <h5>Contact Form</h5>
+                  <h5>Formulario de Contacto</h5>
                 </button>
 
                 <button class="nav-link" id="nav-ContactMap-tab" data-bs-toggle="tab" data-bs-target="#nav-ContactMap"
@@ -431,23 +197,23 @@
                     <div class="row">
                       <div class="col-lg-6 col-md-6 col-12">
                         <input type="text" name="contact-name" id="contact-name" class="form-control"
-                          placeholder="Full name" required>
+                          placeholder="Nombre Completo" required>
                       </div>
 
                       <div class="col-lg-6 col-md-6 col-12">
                         <input type="email" name="contact-email" id="contact-email" pattern="[^ @]*@[^ @]*"
-                          class="form-control" placeholder="Email address" required>
+                          class="form-control" placeholder="Email" required>
                       </div>
                     </div>
 
                     <input type="text" name="contact-company" id="contact-company" class="form-control"
-                      placeholder="Company" required>
+                      placeholder="Compañía" required>
 
                     <textarea name="contact-message" rows="3" class="form-control" id="contact-message"
-                      placeholder="Message"></textarea>
+                      placeholder="Mensaje"></textarea>
 
                     <div class="col-lg-4 col-md-10 col-8 mx-auto">
-                      <button type="submit" class="form-control">Send message</button>
+                      <button type="submit" class="form-control">Contáctanos</button>
                     </div>
                   </div>
                 </form>
@@ -468,3 +234,25 @@
     </section>
   </div>
 </template>
+<style scoped>
+
+/* Estilo del botón */
+.mute-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  z-index: 10; /* Asegura que el botón esté encima del video */
+  transition: background-color 0.3s;
+}
+
+.mute-btn:hover {
+  background-color: #0056b3;
+}
+</style>

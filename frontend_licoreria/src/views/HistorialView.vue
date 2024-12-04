@@ -136,7 +136,7 @@ export default {
       :closable="false"
     >
       <div v-if="ventaSeleccionada">
-        <h3>Productos de la Venta</h3>
+
         <table class="detalle-table">
           <thead>
             <tr>
@@ -205,6 +205,7 @@ export default {
 .ventas-table th {
   background-color: #67eb67;
   font-weight: bold;
+  text-transform: uppercase;
 }
 
 .ventas-table tr {
@@ -219,13 +220,32 @@ export default {
   width: 100%;
   border-collapse: collapse;
   table-layout: auto; /* Ajusta el ancho de las celdas según el contenido */
+  background-color: #460e0e;
 }
 
 .detalle-table th, .detalle-table td {
   padding: 8px 12px; /* Ajuste de padding para detalle de la venta */
-  border: 1px solid #ddd;
+  border: 1px solid #000000;
+  color: #333;
 }
 
+.detalle-table th {
+  background-color: #4CAF50; /* Fondo de las cabeceras */
+  color: white; /* Color del texto en las cabeceras */
+
+}
+
+.detalle-table td {
+  background-color: #fff; /* Fondo blanco para las celdas normales */
+}
+
+.detalle-table tr:nth-child(even) td {
+  background-color: #f2f2f2; /* Fondo alternativo en las filas pares */
+}
+
+.detalle-table tr:hover td {
+  background-color: #00ff00; /* Fondo al pasar el cursor sobre una fila */
+}
 button {
   background-color: #0dc544;
   color: rgb(7, 7, 7);

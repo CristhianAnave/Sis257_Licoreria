@@ -44,9 +44,9 @@ defineExpose({ obtenerLista})
         <tr>
           <th>Nro</th>
           <th>Nit</th>
-          <th>Razon Social</th>
-          <th>Direccion</th>
-          <th>Telefono</th>
+          <th>Razón Social</th>
+          <th>Dirección</th>
+          <th>Teléfono</th>
           <th>Email</th>
           <th>Acciones</th>
         </tr>
@@ -106,6 +106,7 @@ defineExpose({ obtenerLista})
 .table-proveedor th {
   background-color: #67eb67; /* Fondo gris claro para el encabezado */
   font-weight: bold; /* Negrita en los encabezados */
+  text-transform: uppercase;
 }
 
 /* Estilo para las filas */

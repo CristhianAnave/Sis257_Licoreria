@@ -50,35 +50,7 @@
     <div class="container">
       <div class="row">
 
-        <div class="col-lg-6 col-12 mb-4 pb-2">
-          <h5 class="site-footer-title mb-3">Links</h5>
-
-          <ul class="site-footer-links">
-            <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">Home</a>
-            </li>
-
-            <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">About</a>
-            </li>
-
-            <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">Artists</a>
-            </li>
-
-            <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">Schedule</a>
-            </li>
-
-            <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">Pricing</a>
-            </li>
-
-            <li class="site-footer-link-item">
-              <a href="#" class="site-footer-link">Contact</a>
-            </li>
-          </ul>
-        </div>
+       
 
         <div class="col-lg-3 col-md-6 col-12 mb-4 mb-lg-0">
           <h5 class="site-footer-title mb-3">Horarios de Atención</h5>

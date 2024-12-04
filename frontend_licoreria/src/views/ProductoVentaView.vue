@@ -38,7 +38,7 @@
 
 <template>
   <div class="m-8">
-    <h1>Productos Disponibles</h1>
+    <h1 style="font-family: 'Times New Roman', sans-serif; font-weight: bold; color:white">Productos Disponibles</h1>
 
     <!-- Mensaje cuando no hay productos disponibles -->
     <div v-if="productos.length === 0">No hay productos disponibles con stock.</div>
@@ -47,7 +47,7 @@
     <table v-else>
       <thead>
         <tr>
-          <th>Codigo</th>
+          <th>Código</th>
           <th>Nombre</th>
           <th>Descripción</th>
           <th>Categoría</th>
@@ -78,26 +78,59 @@
   table {
     width: 100%;
     border-collapse: collapse;
+    box-shadow: 0 2px 10px rgba(0, 223, 86, 0.87); /* Sombra sutil */
+    background-color: #dadadaa1; /* Fondo claro para la tabla */
+    transition: background-color 0.3s ease;
   }
 
-  th,
-  td {
-    padding: 10px;
+ /* Estilo para las cabeceras */
+ th {
+    background-color: rgba(0, 223, 86, 0.87); /* Fondo azul para las cabeceras */
+    color: rgb(0, 0, 0); /* Color blanco para las letras */
     text-align: left;
-    border: 1px solid #ddd;
+    border:1px solid #000000;
+    padding: 12px 16px;
+    font-weight: bold;
+    text-transform: uppercase; /* Todo en mayúsculas */
   }
+
+  /* Estilo para las celdas */
+  td {
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid #000000;
+    font-size: 14px;
+    color: #333; /* Color de texto de las celdas */
+  }
+
+
+
+  /* Efecto hover en las filas */
+  tr:hover {
+    background-color: #00ff00; /* Fondo celeste al pasar el mouse */
+    transition: background-color 0.3s ease; /* Transición suave al pasar el mouse */
+  }
+
 
   button {
     background-color: #28a745;
-    color: white;
+    color: rgb(3, 3, 3);
     border: none;
-    padding: 5px 10px;
+    padding: 8px 15px;
     cursor: pointer;
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 14px;
+    transition: background-color 0.3s ease; 
+  }
+
+  button:hover {
+    background-color: #218838; /* Fondo verde más oscuro al pasar el mouse */
   }
 
   h1 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    color: #fff;
   }
 
 </style>

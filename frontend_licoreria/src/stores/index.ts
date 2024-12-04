@@ -8,7 +8,7 @@ const useAuthStore = defineStore('auth', {
     user: JSON.parse(localStorage.getItem('user') || 'null'),  // Guardamos el usuario como un objeto
     token: getTokenFromLocalStorage(),
     role: localStorage.getItem('role') || '',
-    returnUrl: null || '',
+    returnUrl: false || '',
   }),
   getters: {
     // Getter para acceder al usuario

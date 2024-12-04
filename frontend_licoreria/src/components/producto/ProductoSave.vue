@@ -8,6 +8,28 @@ import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
 import { computed, onMounted, ref, watch } from 'vue'
 
+const validarNumeroPositivo = (campo: string) => {
+  const regex = /^[0-9]*\.?[0-9]*$/;  // Expresión regular para solo números y punto decimal
+
+  if (campo === 'precioCompra') {
+    if (!regex.test(precioCompraString.value) || parseFloat(precioCompraString.value) < 0) {
+      precioCompraString.value = '0';  // Establece 0 si es un valor no válido
+    }
+  }
+
+  if (campo === 'precioVenta') {
+    if (!regex.test(precioVentaString.value) || parseFloat(precioVentaString.value) < 0) {
+      precioVentaString.value = '0';  // Establece 0 si es un valor no válido
+    }
+  }
+
+  if (campo === 'stock') {
+    if (!regex.test(stockString.value) || parseInt(stockString.value) < 0) {
+      stockString.value = '0';  // Establece 0 si es un valor no válido
+    }
+  }
+};
+
 const ENDPOINT = 'productos'
 const props = defineProps({
   mostrar: Boolean,
@@ -53,15 +75,6 @@ const stockString = computed({
     producto.value.stock = parseInt(value) || 0;
   },
 });
-
-
-
-
-
-
-
-
-
 
 const producto = ref<Producto>({ ...props.producto })
 watch(
@@ -160,6 +173,7 @@ onMounted(() => {
           id="tipoUnidad"
           v-model="producto.tipoUnidad"
           :options="tipoUnidad"
+          option-value="value"
           option-label="label"
           class="flex-auto custom-input"
           autocomplete="off"
@@ -171,9 +185,11 @@ onMounted(() => {
           id="precioCompra"
           v-model ="precioCompraString"
           type="number"
+          min="0"
           class="flex-auto custom-input"
           autocomplete="off"
           autofocus
+          @input="validarNumeroPositivo('precioCompra')"
         />
       </div>
       <div class="flex items-center gap-4 mb-4">
@@ -182,9 +198,11 @@ onMounted(() => {
           id="precioVenta" 
           v-model="precioVentaString"
           type="number"
+          min="0"
           class="flex-auto custom-input"
           autocomplete="off"
           autofocus
+          @input="validarNumeroPositivo('precioVenta')"
         />
       </div>
       <div class="flex items-center gap-4 mb-4">
@@ -193,9 +211,11 @@ onMounted(() => {
           id="stock"
           v-model="stockString"
           type="number"
+          min="0"
           class="flex-auto custom-input"
           autocomplete="off"
           autofocus
+          @input="validarNumeroPositivo('stock')"
         />
       </div>
       <div class="flex justify-end gap-2">

@@ -508,7 +508,7 @@ strong {
 -----------------------------------------*/
 .about-section {
   background-image: url('../images/.jpg'); /*esto controla la imagen*/
-  background-color: #ff0000;     /*esto el fondo debajo de la imagen*/
+  background-color: #050505;     /*esto el fondo debajo de la imagen*/
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;

@@ -112,6 +112,7 @@ defineExpose({ obtenerLista})
 .table-products th {
   background-color: #67eb67; /* Fondo gris claro para el encabezado */
   font-weight: bold; /* Negrita en los encabezados */
+  text-transform: uppercase;
 }
 
 /* Estilo para las filas */

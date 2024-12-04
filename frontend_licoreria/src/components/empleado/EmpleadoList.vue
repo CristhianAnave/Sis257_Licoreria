@@ -57,7 +57,7 @@
           <th>CARGO</th>
           <th>USUARIO</th>
           <th>EMAIL</th>
-          <th>DIRECCION</th>
+          <th>DIRECCIÓN</th>
           <th>CELULAR</th>
           <th>FECHA DE CONTRATACION</th>
           <th>Acciones</th>
@@ -125,6 +125,7 @@
     /* Fondo gris claro para el encabezado */
     font-weight: bold;
     /* Negrita en los encabezados */
+    text-transform: uppercase;
   }
 
   /* Estilo para las filas */

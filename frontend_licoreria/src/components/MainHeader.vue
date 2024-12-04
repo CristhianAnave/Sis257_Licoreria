@@ -27,12 +27,6 @@
     <nav class="navbar navbar-expand-lg" :style="'background-color: ' + (location.path != '/' ? 'black' : '')">
       <div class="container">
 
-      
-
-
-        <RouterView v-if="!authStore.token" to="/Login" class="btn custom-btn d-lg-none ms-auto me-4">Iniciar Seción
-        </RouterView>
-        <a v-else @click="authStore.logout()" class="btn custom-btn d-lg-none ms-auto me-4">Salir</a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,59 +40,68 @@
             </li>
             <slot v-if="authStore.token">
 
-<!-- Menú desplegable para Personal -->
-<li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProducto" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <!-- Menú desplegable para Personal -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProducto" role="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
                   Personal
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownProducto">
-                  <li><RouterLink to="/usuarios" class="dropdown-item">Usuarios</RouterLink></li>
-                  <li><RouterLink to="/empleados" class="dropdown-item">Empleados</RouterLink></li>
+                  <li>
+                    <RouterLink to="/usuarios" class="dropdown-item">Usuarios</RouterLink>
+                  </li>
+                  <li>
+                    <RouterLink to="/empleados" class="dropdown-item">Empleados</RouterLink>
+                  </li>
                 </ul>
               </li>
 
               <!-- Menú desplegable para Inventario -->
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownVentas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownVentas" role="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
                   Inventario
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownVentas">
-                  <li><RouterLink to="/categoria" class="dropdown-item">Categorías</RouterLink></li>
-                  <li><RouterLink to="/productos" class="dropdown-item">Productos</RouterLink></li>
+                  <li>
+                    <RouterLink to="/categoria" class="dropdown-item">Categorías</RouterLink>
+                  </li>
+                  <li>
+                    <RouterLink to="/productos" class="dropdown-item">Productos</RouterLink>
+                  </li>
                 </ul>
               </li>
 
-            <li class="nav-item">
-              <RouterLink to="/proveedores" class="nav-link click-scroll">Proveedores</RouterLink>
-            </li>
+              <li class="nav-item">
+                <RouterLink to="/proveedores" class="nav-link click-scroll">Proveedores</RouterLink>
+              </li>
 
-            <li class="nav-item">
-              <RouterLink to="/clientes" class="nav-link click-scroll">Clientes</RouterLink>
-            </li>
+              <li class="nav-item">
+                <RouterLink to="/clientes" class="nav-link click-scroll">Clientes</RouterLink>
+              </li>
 
-            <!--
+              <!--
             <li class="nav-item">
               <RouterLink to="/productosVenta" class="nav-link click-scroll">Productos Disponibles</RouterLink>
             </li>
             <li class="nav-item">
               <RouterLink to="/carrito" class="nav-link click-scroll">Carrito de Ventas</RouterLink>
             </li>
-            --> 
-            
-            <li class="nav-item">
-              <RouterLink to="/historial" class="nav-link click-scroll">Historial de Ventas</RouterLink>
-            </li>
+            -->
 
-            <li class="nav-item">
-              <RouterLink to="/prueva" class="nav-link click-scroll">Compras</RouterLink>
-            </li>
-          </slot>
+              <li class="nav-item">
+                <RouterLink to="/historial" class="nav-link click-scroll">Historial de Compras</RouterLink>
+              </li>
+
+              <li class="nav-item">
+                <RouterLink to="/prueva" class="nav-link click-scroll">Compras</RouterLink>
+              </li>
+            </slot>
           </ul>
 
 
-          <RouterView v-if="!authStore.token" to="/Login" class="btn custom-btn d-lg-block d-none">Iniciar Seción
-          </RouterView>
-          <a v-else @click="authStore.logout()" class="btn custom-btn d-lg-block d-none">Salir</a>
+
+          <a  @click="authStore.logout()" class="btn custom-btn d-lg-block d-none">Salir</a>
         </div>
       </div>
     </nav>
@@ -107,9 +110,10 @@
 </template>
 
 <style scoped>
-/* Personalización de los menús desplegables */
-.navbar-nav .nav-item.dropdown:hover .dropdown-menu {
-  display: block;
-}
+
+  /* Personalización de los menús desplegables */
+  .navbar-nav .nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+  }
 
 </style>
