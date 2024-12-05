@@ -26,10 +26,3 @@ import MainFooter from '@/components/MainFooter.vue'
 @import '@/assets/css/templatemo-festava-live.css';
 
 </style>
-
-
-
-
-
-
-

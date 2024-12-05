@@ -44,7 +44,7 @@ https://templatemo.com/tm-583-festava-live
 }
 
 body {
-  background-image: url('src/assets/images/fondo2.jpg'); /* Cambia por la ruta de tu imagen */
+   /* Cambia por la ruta de tu imagen */
   background-size: cover; /* Ajusta la imagen para cubrir todo el área */
   background-repeat: no-repeat; /* Evita que la imagen se repita */
   background-attachment: fixed; /* Hace que la imagen quede fija al hacer scroll */
